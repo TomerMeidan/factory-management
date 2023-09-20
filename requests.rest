@@ -1,0 +1,45 @@
+# Normal Server
+
+GET http://localhost:3000/posts
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRvbW15IiwicGFzc3dvcmQiOiJ0b21lcjEiLCJpYXQiOjE2OTUyMDM2NTIsImV4cCI6MTY5NTIwMzY2N30.q8jB6_UMNELl5mqPXcJuyx-UgOPm8jzN288qftSxEGM
+
+# Auth Server
+
+### 
+POST http://localhost:4000/login
+content-type: application/json
+
+{
+    "username": "Bret",
+    "email": "Sincere@april.biz"
+}
+
+### 
+POST http://localhost:4000/login
+content-type: application/json
+
+{
+    "username": "Brett",
+    "email": "Sincere@april.biz"
+}
+
+###
+
+POST http://localhost:4000/token
+content-type: application/json
+
+{
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVC
+    J9.eyJ1c2VybmFtZSI6InRvbW15IiwicGFzc3dvcmQiOiJ0b21lcjEiLCJpYXQiOjE2OTUyMDUxMzh9.PjQakt0-T63ILzO051BqgPO4j7TlkR9TC0Uz-372cJo"
+
+}
+
+###
+
+DELETE http://localhost:4000/logout
+content-type: application/json
+
+{
+    // refresh access key that is sotred in the database goes here
+    "token":
+}
