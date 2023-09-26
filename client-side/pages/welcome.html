@@ -5,9 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Welcome Page</title>
 </head>
-<body onload="getProducts()">
+  <body onload="getProducts()">
     <h1>Welcome Page</h1>
 
+    <h3 id="user-name"></h3>
+    <h2>Action List</h2>
+    
+    </br><button>Employees Page</button></br>
+    </br><button>Departments Page</button></br>
+    </br><button>Shifts Page</button></br>
+    </br><button>Users Page</button></br>
+    </br><button>Logout</button></br>
+    
     <script>
       const url = 'http://localhost:3000/welcome';
 
@@ -20,8 +29,10 @@
         });
 
         const data = await resp.json();
+        const name = sessionStorage['name']
 
         // TODO Use session to store the incoming user data
+        const welcome = document.getElementById('user-name').innerText = `Welcome, ${name}`
         console.log(data);
       };
     </script>

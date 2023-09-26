@@ -29,6 +29,7 @@
         const data = await resp.json();
 
         sessionStorage['accessToken'] = data.accessToken;
+        sessionStorage['name'] = data.userData.name;
         location.href = './welcome.html';
       };
     </script>
