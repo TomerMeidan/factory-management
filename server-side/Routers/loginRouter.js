@@ -60,12 +60,12 @@ loginRouter.post("/", async (req, res) => {
   const accessToken = generateAccessToken(
     user,
     process.env.ACCESS_TOKEN_SECRET,
-    "15s"
+    "15m"
   );
   const refreshAccessToken = generateAccessToken(
     user,
     process.env.REFRESH_TOKEN_SECRET,
-    "30s"
+    "30m"
   );
   // TODO Replace this with an actual DB mechanism that saves the refresh tokens
   refreshTokens.push(refreshAccessToken);
