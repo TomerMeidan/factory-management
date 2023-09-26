@@ -7,7 +7,7 @@ const loginBLL = require("../BLL/loginBLL");
 const jwt = require("jsonwebtoken");
 const loginRouter = express.Router();
 
-// DO NOT DO THIS IN PRODUCTION
+// TODO DO NOT DO THIS IN PRODUCTION
 // Save all refresh tokens in the database for each user
 let refreshTokens = [];
 
@@ -31,7 +31,7 @@ loginRouter.post("/token", (req, res) => {
   });
 });
 
-// Logout Handler
+// TODO Logout Handler
 loginRouter.delete("/logout", (req, res) => {
   // Usually we would delete the refresh token from the database but here we will just remove it from the array
   refreshTokens = refreshTokens.filter(
@@ -57,9 +57,17 @@ loginRouter.post("/", async (req, res) => {
   const user = { username: username, email: email };
 
   // Create public key for certain user with the secret (ACCESS_TOKEN_SECRET)
-  const accessToken = generateAccessToken(user);
-  const refreshAccessToken = jwt.sign(user, process.env.REFRESH_TOKEN_SECRET);
-  // this is acting as if we were saving the refresh token on the database
+  const accessToken = generateAccessToken(
+    user,
+    process.env.ACCESS_TOKEN_SECRET,
+    "15s"
+  );
+  const refreshAccessToken = generateAccessToken(
+    user,
+    process.env.REFRESH_TOKEN_SECRET,
+    "30s"
+  );
+  // TODO Replace this with an actual DB mechanism that saves the refresh tokens
   refreshTokens.push(refreshAccessToken);
   // provide the user with the public key for him to use
   res.json({
@@ -69,8 +77,8 @@ loginRouter.post("/", async (req, res) => {
   });
 });
 
-const generateAccessToken = (user) => {
-  return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "15s" });
+const generateAccessToken = (user, secretToken, expiresIn) => {
+  return jwt.sign(user, secretToken, { expiresIn: expiresIn });
 };
 
 module.exports = loginRouter;

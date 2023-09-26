@@ -8,14 +8,18 @@ const jwt = require("jsonwebtoken");
 const db = require('./configs/db')
 const app = express();
 const port = 3000;
-const cors = require('cors')
+const cors = require('cors');
+const welcomeRouter = require("./Routers/welcomeRouter");
 const connectionString = "mongodb://127.0.0.1:27017/factoryUsers"
 
 // Database Connection
 db.connectDB(connectionString);
 
 // Middlewares
-// Middleware to authencticate the token on user actions
+app.use(express.json());
+app.use(cors());
+
+// Middleware to authenticate the token on user actions
 const authenticateToken = (req, res, next) => {
   // The token header 'authorization' is going to start with the key word Bearer and then comes the token
   // Bearer TOKEN
@@ -23,7 +27,8 @@ const authenticateToken = (req, res, next) => {
   const authHeader = req.headers["authorization"];
   // if user authorized, then authHeader != undefined
   const token = authHeader && authHeader.split(" ")[1];
-  if (token == null) return res.sendStatus(401);
+  if (token == null) 
+    return res.sendStatus(401);
 
   // Verify the token is still valid or if tampered
   jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
@@ -32,11 +37,15 @@ const authenticateToken = (req, res, next) => {
     next();
   });
 };
-app.use(express.json());
-app.use(cors());
 
 // Routers
+// Login Router
+app.use('/login', loginRouter);
+
 // TODO Create Welcome Page Router
+app.use('/welcome', authenticateToken, welcomeRouter);
+
+
 
 // Server Connection
 app.listen(port, () => {

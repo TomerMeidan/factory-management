@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome Page</title>
+</head>
+<body onload="getProducts()">
+    <h1>Welcome Page</h1>
+
+    <script>
+      const url = 'http://localhost:3000/welcome';
+
+      const getProducts = async () => {
+        const accessToken = sessionStorage['accessToken'];
+
+        const resp = await fetch(url, {
+          method: 'GET',
+          headers: { 'authorization': `Bearer ${accessToken}` },
+        });
+
+        const data = await resp.json();
+
+        // TODO Use session to store the incoming user data
+        console.log(data);
+      };
+    </script>
+  </body>
+</html>

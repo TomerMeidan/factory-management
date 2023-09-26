@@ -1,12 +1,15 @@
 # Normal Server
 
 GET http://localhost:3000/posts
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRvbW15IiwicGFzc3dvcmQiOiJ0b21lcjEiLCJpYXQiOjE2OTUyMDM2NTIsImV4cCI6MTY5NTIwMzY2N30.q8jB6_UMNELl5mqPXcJuyx-UgOPm8jzN288qftSxEGM
 
+Authorization: Bearer 
+{
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkJyZXQiLCJlbWFpbCI6IlNpbmNlcmVAYXByaWwuYml6IiwiaWF0IjoxNjk1NzI2OTgyLCJleHAiOjE2OTU3MjY5OTd9.FV2w2B61kzO1FVC_voffQzoCzMTkQuOxxJdTnDFoi4Q"
+}
 # Auth Server
 
 ### 
-POST http://localhost:4000/login
+POST http://localhost:3000/login
 content-type: application/json
 
 {
