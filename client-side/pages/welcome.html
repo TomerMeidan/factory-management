@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../css/style.css" />
+    <title>Welcome Page</title>
+  </head>
+  <body onload="getProducts()">
+    <h1>Factory Management Site</h1>
+
+    <h3 id="user-name"></h3>
+    <button>Homepage</button>
+    <button>Employees</button>
+    <button>Departments</button>
+    <button>Shifts</button>
+    <button>Users</button>
+    <button>Logout</button>
+
+    <p>
+      Welcome to the Factory Management Site! We provide a comprehensive
+      platform to help you easily:
+
+      <li>
+        <b>Log In Securely:</b> Our login uses secure authentication to keep your data
+        safe. Once logged in, you'll see your name on every page.
+      </li>
+      <li>
+        <b>Manage Employees:</b> View all employees in a sortable table. Easily edit
+        employee details, delete employees, and add new ones.
+      </li>
+      <li>
+        <b>Organize Departments:</b> See all departments and who works in each one.
+        Create new departments and assign employees.
+      </li>
+
+      <li>
+        <b>Schedule Shifts:</b> Schedule shifts for employees and assign them to
+        shifts. Easily create and modify shifts.
+      </li>
+
+      <li>
+        <b>Stay Within Limits:</b> We limit actions per user per day to ensure smooth
+        operations. You'll be logged out when your daily actions are used.
+      </li>
+
+      <li>
+        <b>View Users:</b> See details on all registered users and the actions they
+        have remaining. Our intuitive interface makes it simple to handle all
+        your employee management needs
+      </li>
+    </p>
+
+    <script>
+      const url = "http://localhost:3000/welcome";
+
+      const getProducts = async () => {
+        const accessToken = sessionStorage["accessToken"];
+
+        const resp = await fetch(url, {
+          method: "GET",
+          headers: { authorization: `Bearer ${accessToken}` },
+        });
+
+        const data = await resp.json();
+        const name = sessionStorage["name"];
+
+        // TODO Use session to store the incoming user data
+        const welcome = (document.getElementById(
+          "user-name"
+        ).innerText = `Welcome, ${name}`);
+        console.log(data);
+      };
+    </script>
+  </body>
+</html>
