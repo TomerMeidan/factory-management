@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Employees</title>
+    <style>
+        table, th, td {
+          border:1px solid black;
+        }
+        </style>
+  </head>
+  <body onload="getAllUsersHandler()">
+    <h1>Factory Management Site</h1>
+    <button onclick="location.href = '../pages/welcome.html';">Homepage</button>
+    <button>Departments</button>
+    <button>Shifts</button>
+    <button>Users</button>
+    <button>Logout</button>
+    <h3 id="user-name"></h3>
+
+    <h3 id="user-name"></h3>
+
+    <table id="users-table">
+      <tr>
+        <th id="full-name">Full Name</th>
+        <th id="department">Department</th>
+        <th id="shifts">Shifts</th>
+      </tr>
+    </table>
+
+    <script>
+      function buildUsersTable(users) {
+        let usersTable = document.getElementById("users-table");
+        users.forEach((user) => {
+          // We are adding at the end
+          let row = usersTable.insertRow(-1);
+
+          // Create table cells
+          let fullNameCell = row.insertCell(0);
+          let departmentCell = row.insertCell(1);
+          let shiftsCell = row.insertCell(2);
+
+          fullNameCell.innerText = `${user.firstName} ${user.lastName}`;
+          departmentCell.innerText = user.departmentID.name;
+          const shifts = user.shifts
+          shifts.forEach((shift) => {
+            shiftsCell.innerText += `Date: ${shift.date}\nStarting Hour: ${shift.startingHour}\nEnding Hour: ${shift.endingHour}\n\n`;
+          })
+        });
+      }
+
+      async function getAllUsersHandler() {
+        const response = await fetch("http://localhost:3000/employees", {
+          method: "GET",
+        });
+        const users = await response.json();
+        buildUsersTable(users);
+
+        // TODO Use session to store the incoming user data
+        const name = sessionStorage["name"];
+        const welcome = (document.getElementById(
+          "user-name"
+        ).innerText = `Welcome, ${name || ''}`);
+        console.log(data);
+      }
+    </script>
+  </body>
+</html>
