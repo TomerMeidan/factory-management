@@ -40,6 +40,7 @@
         <th id="full-name">Full Name</th>
         <th id="department">Department</th>
         <th id="shifts">Shifts</th>
+        <th id="ids">ID</th>
       </tr>
     </table>`;
 
@@ -60,9 +61,16 @@
           let fullNameCell = row.insertCell(0);
           let departmentCell = row.insertCell(1);
           let shiftsCell = row.insertCell(2);
+          let idCell = row.insertCell(3);
 
-          fullNameCell.innerHTML = `<a href="./edit-employee.html">${user.firstName} ${user.lastName}</a>`;
+          idCell.addEventListener("click", (event) => {
+            sessionStorage['editEmployeeID'] = event.target.innerText
+            location.href = './edit-employee.html'
+          });
+
+          fullNameCell.innerHTML = `${user.firstName} ${user.lastName}`;
           departmentCell.innerText = user.departmentID.name;
+          idCell.innerText = `${user._id}`;
 
           const shifts = user.shifts;
           shifts.forEach((shift) => {
@@ -78,21 +86,6 @@
         });
 
         return departmentsList;
-      }
-
-      function refreshTable() {
-        const table = document.getElementById("users-table");
-
-        // Get all rows
-        const rows = table.getElementsByTagName("tr");
-
-        // Loop through rows and remove specific ones
-        for (let i = 0; i < rows.length; i++) {
-          // Remove row
-          table.deleteRow(i);
-          // Decrement counter since indices shifted after delete
-          i--;
-        }
       }
 
       function buildDepartmentsList(departmentsList) {
@@ -120,11 +113,8 @@
           method: "GET",
         });
         users = await response.json();
+        buildDepartmentsList(buildUsersTable());
 
-        let departmentsList = buildUsersTable();
-
-        // Create departments list
-        buildDepartmentsList(departmentsList);
         // TODO Use session to store the incoming user data
         const name = sessionStorage["name"];
         const welcome = (document.getElementById(

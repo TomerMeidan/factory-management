@@ -12,7 +12,7 @@
       }
     </style>
   </head>
-  <body onload="getAllUsersHandler()">
+  <body onload="editEmployeeHandler()">
     <h1>Factory Management Site</h1>
     <button onclick="location.href = '../pages/welcome.html';">Homepage</button>
     <button>Departments</button>
@@ -23,18 +23,11 @@
 
     <!--  TODO Use sessionStorage to store the selected person from employees page -->
 
-    ID:
-    <input
-      type="text"
-      readonly
-      value="651529fd7e50224abf3be896"
-    />
-    <br /><br />
     First Name: <input type="text" id="firstName" value="John" /> <br /><br />
-    Last Name: <input type="text" id="firstName" value="Doe" /> <br /><br />
-    Start Work Year: <input type="text" id="firstName" value="2019" />
+    Last Name: <input type="text" id="lastName" value="Doe" /> <br /><br />
+    Start Work Year: <input type="text" id="startWorkYear" value="2019" />
     <br /><br />
-    Department Name: <input type="text" id="firstName" value="Marketing" />
+    Department Name: <input type="text" id="department" value="Marketing" />
     <br /><br />
     <!-- TODO Shifts table -->
 
@@ -43,6 +36,29 @@
     <button>Delete</button>
 
     <script>
+
+        
+      async function editEmployeeHandler() {
+        const id = sessionStorage["editEmployeeID"];
+
+        const response = await fetch(`http://localhost:3000/employees/edit/${id}`, {
+          method: "GET",
+        });
+        const user = await response.json();
+
+        let firstName = document.getElementById("firstName");
+        let lastName = document.getElementById("lastName");
+        let startWorkYear = document.getElementById("startWorkYear");
+        let department = document.getElementById("department");
+        
+        firstName.value = user.firstName
+        lastName.value = user.lastName
+        startWorkYear.value = user.startWorkYear
+        department.value = user.departmentID.name
+
+        console.log(response);
+      }
+
       async function getAllUsersHandler() {
         const response = await fetch(`http://localhost:3000/employees/edit/`, {
           method: "GET",
