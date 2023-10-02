@@ -40,3 +40,10 @@ content-type: application/json
 
 GET http://localhost:3000/employees
 
+###
+
+GET http://localhost:3000/employees/edit/651529fd7e50224abf3be896
+
+###
+
+GET http://localhost:3000/employees/edit/651529fd7e50224abf3b

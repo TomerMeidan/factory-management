@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Employees</title>
+    <style>
+      table,
+      th,
+      td {
+        border: 1px solid black;
+      }
+    </style>
+  </head>
+  <body onload="getAllUsersHandler()">
+    <h1>Factory Management Site</h1>
+    <button onclick="location.href = '../pages/welcome.html';">Homepage</button>
+    <button>Departments</button>
+    <button>Shifts</button>
+    <button>Users</button>
+    <button>Logout</button>
+    <h3 id="user-name"></h3>
+
+    <!--  TODO Use sessionStorage to store the selected person from employees page -->
+
+    ID:
+    <input
+      type="text"
+      readonly
+      value="651529fd7e50224abf3be896"
+    />
+    <br /><br />
+    First Name: <input type="text" id="firstName" value="John" /> <br /><br />
+    Last Name: <input type="text" id="firstName" value="Doe" /> <br /><br />
+    Start Work Year: <input type="text" id="firstName" value="2019" />
+    <br /><br />
+    Department Name: <input type="text" id="firstName" value="Marketing" />
+    <br /><br />
+    <!-- TODO Shifts table -->
+
+    <button>Update</button>
+
+    <button>Delete</button>
+
+    <script>
+      async function getAllUsersHandler() {
+        const response = await fetch(`http://localhost:3000/employees/edit/`, {
+          method: "GET",
+        });
+        const user = await response.json();
+
+        // TODO Use session to store the incoming user data
+        const name = sessionStorage["name"];
+        const welcome = (document.getElementById(
+          "user-name"
+        ).innerText = `Welcome, ${name || ""}`);
+        console.log(data);
+      }
+    </script>
+  </body>
+</html>

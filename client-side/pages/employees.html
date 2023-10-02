@@ -5,10 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Employees</title>
     <style>
-        table, th, td {
-          border:1px solid black;
-        }
-        </style>
+      table,
+      th,
+      td {
+        border: 1px solid black;
+      }
+    </style>
   </head>
   <body onload="getAllUsersHandler()">
     <h1>Factory Management Site</h1>
@@ -19,20 +21,38 @@
     <button>Logout</button>
     <h3 id="user-name"></h3>
 
-    <h3 id="user-name"></h3>
+    <label for="department">Choose a department:</label>
 
-    <table id="users-table">
+    <select name="departments" id="departments" onclick="">
+      <option value="all">All</option>
+    </select>
+
+    <table id="users-table"></table>
+
+    <script>
+      let users = null;
+      let clickCount = 0;
+
+      function buildUsersTable(department = "all") {
+        let usersTable = document.getElementById("users-table");
+        usersTable.innerHTML = `    <table id="users-table">
       <tr>
         <th id="full-name">Full Name</th>
         <th id="department">Department</th>
         <th id="shifts">Shifts</th>
       </tr>
-    </table>
+    </table>`;
 
-    <script>
-      function buildUsersTable(users) {
-        let usersTable = document.getElementById("users-table");
-        users.forEach((user) => {
+        let departmentsList = new Array();
+        let updatedUsersList = null;
+
+        if (department != "all")
+          updatedUsersList = users.filter(
+            (user) => user.departmentID.name === department
+          );
+        else updatedUsersList = users;
+
+        updatedUsersList.forEach((user) => {
           // We are adding at the end
           let row = usersTable.insertRow(-1);
 
@@ -41,12 +61,57 @@
           let departmentCell = row.insertCell(1);
           let shiftsCell = row.insertCell(2);
 
-          fullNameCell.innerText = `${user.firstName} ${user.lastName}`;
+          fullNameCell.innerHTML = `<a href="./edit-employee.html">${user.firstName} ${user.lastName}</a>`;
           departmentCell.innerText = user.departmentID.name;
-          const shifts = user.shifts
+
+          const shifts = user.shifts;
           shifts.forEach((shift) => {
             shiftsCell.innerText += `Date: ${shift.date}\nStarting Hour: ${shift.startingHour}\nEnding Hour: ${shift.endingHour}\n\n`;
-          })
+          });
+
+          const depExist = departmentsList.find(
+            (department) => department === user.departmentID.name
+          );
+
+          if (depExist === undefined)
+            departmentsList.push(user.departmentID.name);
+        });
+
+        return departmentsList;
+      }
+
+      function refreshTable() {
+        const table = document.getElementById("users-table");
+
+        // Get all rows
+        const rows = table.getElementsByTagName("tr");
+
+        // Loop through rows and remove specific ones
+        for (let i = 0; i < rows.length; i++) {
+          // Remove row
+          table.deleteRow(i);
+          // Decrement counter since indices shifted after delete
+          i--;
+        }
+      }
+
+      function buildDepartmentsList(departmentsList) {
+        departmentSelect = document.getElementById("departments");
+
+        departmentsList.forEach((department) => {
+          departmentSelect.options[departmentSelect.options.length] =
+            new Option(department, department);
+        });
+
+        departmentSelect.addEventListener("click", (event) => {
+          clickCount++;
+          if (clickCount % 2 == 0) {
+            if (event.target.value === "all") {
+              buildUsersTable();
+            } else {
+              buildUsersTable((department = event.target.value));
+            }
+          }
         });
       }
 
@@ -54,14 +119,17 @@
         const response = await fetch("http://localhost:3000/employees", {
           method: "GET",
         });
-        const users = await response.json();
-        buildUsersTable(users);
+        users = await response.json();
 
+        let departmentsList = buildUsersTable();
+
+        // Create departments list
+        buildDepartmentsList(departmentsList);
         // TODO Use session to store the incoming user data
         const name = sessionStorage["name"];
         const welcome = (document.getElementById(
           "user-name"
-        ).innerText = `Welcome, ${name || ''}`);
+        ).innerText = `Welcome, ${name || ""}`);
         console.log(data);
       }
     </script>
