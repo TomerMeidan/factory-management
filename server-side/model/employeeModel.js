@@ -6,7 +6,6 @@ const schema = mongoose.Schema;
 
 const employeeSchema = new schema(
   {
-    _id: mongoose.Schema.Types.ObjectId,
     firstName: String,
     lastName: String,
     startWorkYear: Number,

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Add New Employee</title>
+    <style>
+      table,
+      th,
+      td {
+        border: 1px solid black;
+      }
+    </style>
+  </head>
+  <body onload="addNewEmployeeOnLoadHandler()">
+    <h1>Factory Management Site</h1>
+    <button onclick="location.href = '../pages/welcome.html';">Homepage</button>
+    <button onclick="location.href = './employees.html';">Employees</button>
+    <button>Departments</button>
+    <button>Shifts</button>
+    <button>Users</button>
+    <button>Logout</button>
+    <h3 id="user-name"></h3>
+
+    First Name: <input type="text" id="firstName" value="John" /> <br /><br />
+    Last Name: <input type="text" id="lastName" value="Doe" /> <br /><br />
+    Start Work Year: <input type="text" id="startWorkYear" value="2019" />
+    <br /><br />
+    Department Name: <input type="text" id="department" value="Marketing" />
+    <br /><br />
+    <br />
+
+    <p>Shifts Database</p>
+    <table id="all-shifts-table"></table>
+    <br />
+
+    <button onclick="addEmployee()">Add</button>
+
+    <button onclick="location.href = './employees.html';">Cancel</button>
+
+    <p id="responseFromServer"></p>
+
+    <script>
+      let newShiftsForEmployee = {
+        shifts: [],
+      };
+
+      async function addEmployee() {
+        const data = {
+          firstName: document.getElementById("firstName").value,
+          lastName: document.getElementById("lastName").value,
+          startWorkYear: document.getElementById("startWorkYear").value,
+          departmentName: document.getElementById("department").value,
+          shifts: newShiftsForEmployee.shifts,
+        };
+        const response = await fetch(`http://localhost:3000/employees/new`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        });
+        const responseMessage = await response.json();
+        document.getElementById("responseFromServer").innerText = responseMessage
+         
+      }
+
+      async function addNewEmployeeOnLoadHandler() {
+        // Build all available shifts table
+        let allShifts = await getAllShifts();
+        buildShiftsTable(allShifts, "all-shifts-table");
+
+        // TODO Use session to store the incoming user data
+        const name = sessionStorage["name"];
+        const welcome = (document.getElementById(
+          "user-name"
+        ).innerText = `Welcome, ${name || ""}`);
+      }
+
+      async function getAllShifts() {
+        const response = await fetch(`http://localhost:3000/shifts`, {
+          method: "GET",
+        });
+        const shifts = await response.json();
+        return shifts;
+      }
+
+      function buildShiftsTable(shifts, shiftsTableIdentifier) {
+        let employeeID = document.getElementById("employeeID");
+        let usersTable = document.getElementById(shiftsTableIdentifier);
+        usersTable.innerHTML =
+         `<table id=${shiftsTableIdentifier}>
+          <tr>
+            <th id="date">Date</th>
+            <th id="starting-hour">Starting Hour</th>
+            <th id="ending-hour">Ending Hour</th>
+          </tr>
+          </table>`;
+
+        shifts.forEach((shift) => {
+          // We are adding at the end
+          let shiftTableRow = usersTable.insertRow(-1);
+          shiftTableRow.setAttribute("id", `${shift._id}`);
+
+          shiftTableRow.addEventListener("click", async (event) => {
+
+            // Cancel shift selection for employee
+            if (shiftTableRow.style.background === "yellow") {
+              shiftTableRow.style.background = "white";
+              newShiftsForEmployee = newShiftsForEmployee.shifts.filter(
+                (shiftID) => shiftID != shiftTableRow.id
+              );
+              if (newShiftsForEmployee.length === 0)
+                newShiftsForEmployee = {
+                  shifts: [],
+                };
+            } else {
+              // Select a shift to add for employee
+              shiftTableRow.style.background = "yellow";
+              newShiftsForEmployee.shifts.push(shiftTableRow.id);
+            }
+          });
+
+          // Create table cells
+          let date = (shiftTableRow.insertCell(0).innerHTML = `${shift.date}`);
+          let startingHour = (shiftTableRow.insertCell(1).innerHTML = `${shift.startingHour}`);
+          let endingHour = (shiftTableRow.insertCell(2).innerHTML = `${shift.endingHour}`);
+        });
+      }
+    </script>
+  </body>
+</html>

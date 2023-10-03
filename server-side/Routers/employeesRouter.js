@@ -39,13 +39,22 @@ employeesRouter.delete("/edit/:id", async (req, res) => {
     responseMessage = await employeesBLL.deleteEmployeeByID(req.params.id);
     return res.status(201).json(responseMessage);
   } catch (err) {
-    return res.status(404).send(err.name);
+    return res.status(501).send(err.name);
   }
 });
 
-// TODO Action: POST
+// Action: POST
 // Entry Point: localhost:port/employees/new
 // Info: Create new employee and send it to the mongo db
+employeesRouter.post("/new", async (req,res) => {
+  let responseMessage = null;
+  try {
+    responseMessage = await employeesBLL.addEmployee(req.body);
+    return res.status(201).json(responseMessage);
+  } catch (err) {
+    return res.status(501).send(err.name);
+  }
+})
 
 // Action: GET
 // Entry Point: localhost:port/employees
