@@ -57,7 +57,6 @@
           departmentName: document.getElementById("department").value,
           shifts: newShiftsForEmployee.shifts,
         };
-
         const response = await fetch(
           `http://localhost:3000/employees/edit/${id}`,
           {
@@ -69,9 +68,7 @@
           }
         );
         const user = await response.json();
-        editEmployeeHandler();
         document.getElementById("responseFromServer").innerText = user;
-        
       }
 
       async function deleteEmployee() {
@@ -97,18 +94,13 @@
           }
         );
         const user = await response.json();
+        user.shifts.forEach((shift) => newShiftsForEmployee.shifts.push(shift._id))
 
-        let firstName = document.getElementById("firstName");
-        let lastName = document.getElementById("lastName");
-        let startWorkYear = document.getElementById("startWorkYear");
-        let department = document.getElementById("department");
-        let employeeID = document.getElementById("employeeID");
-
-        firstName.value = user.firstName;
-        lastName.value = user.lastName;
-        startWorkYear.value = user.startWorkYear;
-        department.value = user.departmentID.name;
-        employeeID.value = user._id;
+        document.getElementById("firstName").value = user.firstName;
+        document.getElementById("lastName").value = user.lastName;
+        document.getElementById("startWorkYear").value = user.startWorkYear;
+        document.getElementById("department").value = user.departmentID.name;
+        document.getElementById("employeeID").value = user._id;
 
         // Build employees existing shifts table
         buildEmployeeShiftsTable(user.shifts, "user-shift-table");
@@ -172,8 +164,12 @@
                 };
 
               }else{ // Select shift row to add for employee
-              row.style.background = "yellow"
-              newShiftsForEmployee.shifts.push(row.id)
+              
+              const isExist = newShiftsForEmployee.shifts.find((shift) => shift === row.id)
+              if(isExist === undefined){
+                newShiftsForEmployee.shifts.push(row.id)
+                row.style.background = "yellow"
+              }
               }
 
           });

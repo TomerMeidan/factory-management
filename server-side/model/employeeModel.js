@@ -21,13 +21,7 @@ const employeeSchema = new schema(
       },
     ],
   },
-  {
-    toJSON: { virtuals: true },
-    toObject: { virtuals: true },
-  },
   { versionKey: false }
 );
-
-employeeSchema.index({ shifts: 1 }, { unique: true });
 
 module.exports = mongoose.model("employee", employeeSchema, "employees");
