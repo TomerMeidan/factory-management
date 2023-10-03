@@ -8,14 +8,15 @@
   <body onload="getProducts()">
     <h1>Factory Management Site</h1>
 
-    <button>Homepage</button>
+    <button style="background-color:yellow" onclick="location.href = '../pages/welcome.html';">Homepage</button>
     <button onclick="location.href = './employees.html';">Employees</button>
     <button>Departments</button>
     <button>Shifts</button>
     <button>Users</button>
     <button>Logout</button>
     <h3 id="user-name"></h3>
-
+    
+    <div style="font-size: 25px;">
     <p>
       Welcome to the Factory Management Site! We provide a comprehensive
       platform to help you easily:
@@ -49,6 +50,7 @@
         your employee management needs
       </li>
     </p>
+  </div>
 
     <script>
       const url = "http://localhost:3000/welcome";

@@ -41,9 +41,26 @@ content-type: application/json
 GET http://localhost:3000/employees
 
 ###
-
+# Valid employee id in employess collection
 GET http://localhost:3000/employees/edit/651529fd7e50224abf3be896
 
 ###
-
+# Invalid employee id in employess collection
 GET http://localhost:3000/employees/edit/651529fd7e50224abf3b
+
+
+###
+# Delete user from mongo db employees collection
+DELETE http://localhost:3000/employees/edit/651ad4b7809bdcd1208d131d
+
+###
+# Update employee's information on mongo db employees collection
+PUT http://localhost:3000/employees/edit/6515321a7e50224abf3be8d3
+content-type: application/json
+
+  {
+    "firstName": "Billy",
+    "lastName": "Story",
+    "startWorkYear": 2018,
+    "departmentName": "Main"
+  }

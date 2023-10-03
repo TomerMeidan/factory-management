@@ -15,55 +15,107 @@
   <body onload="editEmployeeHandler()">
     <h1>Factory Management Site</h1>
     <button onclick="location.href = '../pages/welcome.html';">Homepage</button>
+    <button onclick="location.href = './employees.html';">Employees</button>
     <button>Departments</button>
     <button>Shifts</button>
     <button>Users</button>
     <button>Logout</button>
     <h3 id="user-name"></h3>
 
-    <!--  TODO Use sessionStorage to store the selected person from employees page -->
-
+    ID: <input type="text" id="employeeID" value="1111" readonly /> (read only)
+    <br /><br />
     First Name: <input type="text" id="firstName" value="John" /> <br /><br />
     Last Name: <input type="text" id="lastName" value="Doe" /> <br /><br />
     Start Work Year: <input type="text" id="startWorkYear" value="2019" />
     <br /><br />
     Department Name: <input type="text" id="department" value="Marketing" />
     <br /><br />
-    <!-- TODO Shifts table -->
+   <p>Employee's Shifts</p> 
+    <table id="user-shift-table"></table>
 
-    <button>Update</button>
+  </br>  <p>Entire Shifts Database</p>  
+    <table id="all-shifts-table"></table></br>
 
-    <button>Delete</button>
+    <button onclick="updateEmployee()">Update</button>
+
+    <button onclick="deleteEmployee()">Delete</button>
+
+    <p id="responseFromServer"></p>
 
     <script>
 
+      let newShiftsForEmployee = {
+        shifts: []
+      };
+
+      async function updateEmployee() {
+        const id = sessionStorage["editEmployeeID"];
+        const data = {
+          firstName: document.getElementById("firstName").value,
+          lastName: document.getElementById("lastName").value,
+          startWorkYear: document.getElementById("startWorkYear").value,
+          departmentName: document.getElementById("department").value,
+          shifts: newShiftsForEmployee.shifts,
+        };
+
+        const response = await fetch(
+          `http://localhost:3000/employees/edit/${id}`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+          }
+        );
+        const user = await response.json();
+        editEmployeeHandler();
+        document.getElementById("responseFromServer").innerText = user;
         
+      }
+
+      async function deleteEmployee() {
+        const id = sessionStorage["editEmployeeID"];
+
+        const response = await fetch(
+          `http://localhost:3000/employees/edit/${id}`,
+          {
+            method: "DELETE",
+          }
+        );
+        const user = await response.json();
+        document.getElementById("responseFromServer").innerText = user;
+      }
+
       async function editEmployeeHandler() {
         const id = sessionStorage["editEmployeeID"];
 
-        const response = await fetch(`http://localhost:3000/employees/edit/${id}`, {
-          method: "GET",
-        });
+        const response = await fetch(
+          `http://localhost:3000/employees/edit/${id}`,
+          {
+            method: "GET",
+          }
+        );
         const user = await response.json();
 
         let firstName = document.getElementById("firstName");
         let lastName = document.getElementById("lastName");
         let startWorkYear = document.getElementById("startWorkYear");
         let department = document.getElementById("department");
-        
-        firstName.value = user.firstName
-        lastName.value = user.lastName
-        startWorkYear.value = user.startWorkYear
-        department.value = user.departmentID.name
+        let employeeID = document.getElementById("employeeID");
 
-        console.log(response);
-      }
+        firstName.value = user.firstName;
+        lastName.value = user.lastName;
+        startWorkYear.value = user.startWorkYear;
+        department.value = user.departmentID.name;
+        employeeID.value = user._id;
 
-      async function getAllUsersHandler() {
-        const response = await fetch(`http://localhost:3000/employees/edit/`, {
-          method: "GET",
-        });
-        const user = await response.json();
+        // Build employees existing shifts table
+        buildEmployeeShiftsTable(user.shifts, "user-shift-table");
+
+        // Build all available shifts table
+        let allShifts = await getAllShifts();
+        buildEmployeeShiftsTable(allShifts, "all-shifts-table");
 
         // TODO Use session to store the incoming user data
         const name = sessionStorage["name"];
@@ -71,6 +123,67 @@
           "user-name"
         ).innerText = `Welcome, ${name || ""}`);
         console.log(data);
+
+        console.log(response);
+      }
+
+      async function getAllShifts() {
+        const response = await fetch(
+          `http://localhost:3000/shifts`,
+          {
+            method: "GET",
+          }
+        );
+        const shifts = await response.json();
+        return shifts;
+      }
+
+       function buildEmployeeShiftsTable(shifts, shiftsTableIdentifier) {
+        let employeeID = document.getElementById("employeeID");
+        let usersTable = document.getElementById(shiftsTableIdentifier);
+        usersTable.innerHTML = `<table id=${shiftsTableIdentifier}>
+      <tr>
+        <th id="date">Date</th>
+        <th id="starting-hour">Starting Hour</th>
+        <th id="ending-hour">Ending Hour</th>
+      </tr>
+    </table>`;
+
+        shifts.forEach((shift) => {
+          // We are adding at the end
+          let row = usersTable.insertRow(-1);
+          row.setAttribute("id", `${shift._id}`);
+
+          // Create table cells
+          let date = row.insertCell(0);
+          let startingHour = row.insertCell(1);
+          let endingHour = row.insertCell(2);
+
+          if (shiftsTableIdentifier === "all-shifts-table") {
+            row.addEventListener("click", async (event) => {
+
+              // Cancel selection
+              if(row.style.background === "yellow" ){
+                row.style.background = "white"
+                newShiftsForEmployee = newShiftsForEmployee.shifts.filter((shiftID) => shiftID != row.id) 
+                if(newShiftsForEmployee.length === 0)
+                newShiftsForEmployee = {
+                  shifts: []
+                };
+
+              }else{ // Select shift row to add for employee
+              row.style.background = "yellow"
+              newShiftsForEmployee.shifts.push(row.id)
+              }
+
+          });
+          }
+
+          date.innerHTML = `${shift.date}`;
+          startingHour.innerHTML = `${shift.startingHour}`;
+          endingHour.innerHTML = `${shift.endingHour}`;
+        });
+
       }
     </script>
   </body>

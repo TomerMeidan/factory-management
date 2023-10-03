@@ -15,17 +15,18 @@
   <body onload="getAllUsersHandler()">
     <h1>Factory Management Site</h1>
     <button onclick="location.href = '../pages/welcome.html';">Homepage</button>
+    <button style="background-color:yellow" onclick="location.href = './employees.html';">Employees</button>
     <button>Departments</button>
     <button>Shifts</button>
     <button>Users</button>
     <button>Logout</button>
     <h3 id="user-name"></h3>
 
-    <label for="department">Choose a department:</label>
+    <label for="department">Filter employees by department:</label>
 
     <select name="departments" id="departments" onclick="">
       <option value="all">All</option>
-    </select>
+    </select></br></br>
 
     <table id="users-table"></table>
 
@@ -40,7 +41,6 @@
         <th id="full-name">Full Name</th>
         <th id="department">Department</th>
         <th id="shifts">Shifts</th>
-        <th id="ids">ID</th>
       </tr>
     </table>`;
 
@@ -56,21 +56,23 @@
         updatedUsersList.forEach((user) => {
           // We are adding at the end
           let row = usersTable.insertRow(-1);
+          row.setAttribute('id', `${user._id}`);
 
           // Create table cells
           let fullNameCell = row.insertCell(0);
           let departmentCell = row.insertCell(1);
           let shiftsCell = row.insertCell(2);
-          let idCell = row.insertCell(3);
 
-          idCell.addEventListener("click", (event) => {
-            sessionStorage['editEmployeeID'] = event.target.innerText
+          fullNameCell.addEventListener("click", (event) => {
+            const cellTarget = event.target
+            const row = cellTarget.closest('tr')
+
+            sessionStorage['editEmployeeID'] = row.id
             location.href = './edit-employee.html'
           });
 
-          fullNameCell.innerHTML = `${user.firstName} ${user.lastName}`;
-          departmentCell.innerText = user.departmentID.name;
-          idCell.innerText = `${user._id}`;
+          fullNameCell.innerHTML = `<a href="javascript: void(0)"> ${user.firstName} ${user.lastName}</a>`;
+          departmentCell.innerHTML = `<a href="javascript: void(0)">${user.departmentID.name}</a>`;
 
           const shifts = user.shifts;
           shifts.forEach((shift) => {

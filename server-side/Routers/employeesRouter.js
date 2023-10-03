@@ -2,25 +2,54 @@ const express = require("express");
 const employeesRouter = express.Router();
 const employeesBLL = require("../BLL/employeesBLL");
 
-// Entry Point: localhost:port/employees
+// Main Entry Point: localhost:port/employees
 
-// TODO implement edit handler to edit an existing employee's information
+// Action: GET
+// Entry Point: localhost:port/employees/edit/:id
+// Info: Obtain requested employee's information for edit
 employeesRouter.get("/edit/:id", async (req, res) => {
-    let employee = null;
+  let responseMessage = null;
   try {
-    employee = await employeesBLL.getEmployeeByID(req.params.id);
+    responseMessage = await employeesBLL.getEmployeeByID(req.params.id);
+    return res.status(201).json(responseMessage);
   } catch (err) {
     return res.status(404).send(err.name);
   }
-  res.status(201).send(employee);
 });
 
-// TODO implement post edit to mongodb here
+// TODO Action: PUT
+// Entry Point: localhost:port/employees/edit/:id
+// Info: Update an employee with new information
+employeesRouter.put("/edit/:id", async (req, res) => {
+  let responseMessage = null;
+  try {
+    responseMessage = await employeesBLL.updateEmployeeByID(req.params.id, req.body);
+    return res.status(201).json(responseMessage);
+  } catch (err) {
+    return res.status(404).json("Invalid data was entered!");
+  }
+});
 
+// Action: DELETE
+// Entry Point: localhost:port/employees/edit/:id
+// Info: Delete requested employee from mongo db by _id field
+employeesRouter.delete("/edit/:id", async (req, res) => {
+  let responseMessage = null;
+  try {
+    responseMessage = await employeesBLL.deleteEmployeeByID(req.params.id);
+    return res.status(201).json(responseMessage);
+  } catch (err) {
+    return res.status(404).send(err.name);
+  }
+});
 
-// TODO implement new handler to add a new employee to the system
+// TODO Action: POST
+// Entry Point: localhost:port/employees/new
+// Info: Create new employee and send it to the mongo db
 
-// Get Handler: Get all employees data (Full name, Department and his shifts)
+// Action: GET
+// Entry Point: localhost:port/employees
+// Info: Get all employees data (Full name, Department and his shifts)
 employeesRouter.get("/", async (req, res) => {
   const employees = await employeesBLL.getAllEmployees();
   res.status(201).send(employees);
