@@ -5,9 +5,6 @@ const schema = mongoose.Schema;
 // Department Schema
 
 const departmentSchema = new schema({
-  _id: {
-    type: mongoose.Schema.Types.ObjectId,
-  },
   name: {
     type: String,
   },

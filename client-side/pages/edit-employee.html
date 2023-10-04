@@ -13,13 +13,7 @@
     </style>
   </head>
   <body onload="editEmployeeHandler()">
-    <h1 style="text-align: center;">Factory Management Site</h1>
-    <button onclick="location.href = '../pages/welcome.html';">Homepage</button>
-    <button onclick="location.href = './employees.html';">Employees</button>
-    <button>Departments</button>
-    <button>Shifts</button>
-    <button>Users</button>
-    <button>Logout</button>
+    <div id="header"></div>
     <h3 id="user-name"></h3>
 
     ID: <input type="text" id="employeeID" value="1111" readonly /> (read only)
@@ -41,7 +35,14 @@
     <button onclick="deleteEmployee()">Delete</button>
 
     <p id="responseFromServer"></p>
-
+    <script>
+      fetch('./header.html')
+        .then(response => response.text())
+        .then(html => {
+          document.getElementById('header').innerHTML = html;
+        });
+  
+    </script>
     <script>
 
       let newShiftsForEmployee = {

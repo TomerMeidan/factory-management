@@ -10,15 +10,12 @@ const db = require("./configs/db");
 const app = express();
 
 // Routers imports
-const loginRouter = require("./Routers/loginRouter");
-const welcomeRouter = require("./Routers/welcomeRouter");
-const employeesRouter = require("./Routers/employeesRouter");
-const shiftsRouter = require('./Routers/shiftsRouter')
+const loginRouter = require("./routers/loginRouter");
+const employeesRouter = require("./routers/employeesRouter");
+const shiftsRouter = require("./routers/shiftsRouter");
+const departmentsRouter = require("./routers/departmentsRouter");
 
-// Middlewares
-app.use(express.json());
-app.use(cors());
-
+// TODO add authenticateToken later on all routers
 const authenticateToken = (req, res, next) => {
   // Middleware to authenticate the token on user actions
   // Token header ['authorization' Bearer TOKEN]
@@ -36,25 +33,30 @@ const authenticateToken = (req, res, next) => {
   });
 };
 
+// Middlewares
+app.use(express.json());
+app.use(cors());
+
 // Routers
-// Login Router
+// TODO Login router page related requests
 app.use("/login", loginRouter);
 
-// TODO Create Welcome Page Router
-app.use("/welcome", authenticateToken, welcomeRouter);
-
-// TODO Create Employees page router
-// TODO add authenticateToken later
+// Employees router page related requests
 app.use("/employees", employeesRouter);
 
-// TODO Create Shifts page router
-app.use("/shifts", shiftsRouter)
+// TODO Departments router page related requests
+app.use("/departments", departmentsRouter);
+
+// TODO Shifts router page related requests
+app.use("/shifts", shiftsRouter);
 
 // Server Connection
 app.listen(process.env.PORT, async () => {
   try {
     await db.connectDB(process.env.MONGO_URI);
-    console.log(`Factory Management Server is listening on port ${process.env.PORT}...`);
+    console.log(
+      `Factory Management Server is listening on port ${process.env.PORT}...`
+    );
   } catch (err) {
     console.log(`Server Connection Error: ${err.message}`);
   }

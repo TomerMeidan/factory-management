@@ -64,4 +64,17 @@ employeesRouter.get("/", async (req, res) => {
   res.status(201).send(employees);
 });
 
+// Action: GET
+// Entry Point: localhost:port/employees/not_in/department/:id
+// Info: Get all employees data that are not in a specific department
+employeesRouter.get("/not_in/department/:id", async (req,res) => {
+  try{
+  const employees = await employeesBLL.getAllEmployeesNotInDepartment(req.params.id)
+  res.status(201).send(employees);
+  }catch(err){
+    console.log(`EmployeesRouter : ${err.message}`)
+    res.status(201).send(`${err.message}`);
+  }
+})
+
 module.exports = employeesRouter;

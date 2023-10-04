@@ -64,3 +64,16 @@ content-type: application/json
     "startWorkYear": 2018,
     "departmentName": "Main"
   }
+
+###
+# Departments - Get all departments
+
+GET http://localhost:3000/departments
+
+###
+#Departments - Get a department by id
+GET http://localhost:3000/departments/edit/65152a987e50224abf3be89a
+
+###
+# Employees - All employees that are not in a certain department
+GET http://localhost:3000/employees/not_in/department/65152a987e50224abf3be89a

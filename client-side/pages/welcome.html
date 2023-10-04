@@ -6,14 +6,8 @@
     <title>Welcome Page</title>
   </head>
   <body onload="getProducts()">
-    <h1 style="text-align: center;">Factory Management Site</h1>
+    <div id="header"></div>
 
-    <button style="background-color:yellow" onclick="location.href = '../pages/welcome.html';">Homepage</button>
-    <button onclick="location.href = './employees.html';">Employees</button>
-    <button>Departments</button>
-    <button>Shifts</button>
-    <button>Users</button>
-    <button>Logout</button>
     <h3 id="user-name"></h3>
     
     <div style="font-size: 15px;">
@@ -52,6 +46,14 @@
     </p>
   </div>
 
+  <script>
+    fetch('./header.html')
+      .then(response => response.text())
+      .then(html => {
+        document.getElementById('header').innerHTML = html;
+      });
+
+  </script>
     <script>
       const url = "http://localhost:3000/welcome";
 
