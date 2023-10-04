@@ -90,12 +90,28 @@ const addEmployee = async (employeeData) => {
 };
 
 const getAllEmployeesNotInDepartment = async (departmentID) => {
-
   const notInDepartment = { departmentID: { $ne: departmentID } };
   // Filter employees not in the Sales department
-  const employees = await employeeModel.find({departmentID: notInDepartment.departmentID})
+  const employees = await employeeModel.find({
+    departmentID: notInDepartment.departmentID,
+  });
 
   return employees;
+};
+
+const updateEmployeeDepartment = async (employeeID, data) => {
+  const departmentID = { departmentID: data.departmentID };
+  await employeeModel
+    .findOneAndUpdate({ _id: employeeID }, departmentID)
+    .then(() => {
+      return "Department updated!";
+    })
+    .catch((err) => {
+      console.log(
+        `EmployeeBLL: updateEmployeeDepartment: Error updating employee's (id: ${id}) department in the system! errorMEssage:${err.message}`
+      );
+      return `Updated employee's (id: ${id}) department in the system! ${err}`;
+    });
 };
 
 module.exports = {
@@ -105,4 +121,5 @@ module.exports = {
   updateEmployeeByID,
   addEmployee,
   getAllEmployeesNotInDepartment,
+  updateEmployeeDepartment,
 };

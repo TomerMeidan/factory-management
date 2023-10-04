@@ -23,7 +23,10 @@ employeesRouter.get("/edit/:id", async (req, res) => {
 employeesRouter.put("/edit/:id", async (req, res) => {
   let responseMessage = null;
   try {
-    responseMessage = await employeesBLL.updateEmployeeByID(req.params.id, req.body);
+    responseMessage = await employeesBLL.updateEmployeeByID(
+      req.params.id,
+      req.body
+    );
     return res.status(201).json(responseMessage);
   } catch (err) {
     return res.status(404).json("Invalid data was entered!");
@@ -32,7 +35,7 @@ employeesRouter.put("/edit/:id", async (req, res) => {
 
 // Action: DELETE
 // Entry Point: localhost:port/employees/edit/:id
-// Info: Delete requested employee from mongo db by _id field
+// Info: Delete requested employee from collection by _id field
 employeesRouter.delete("/edit/:id", async (req, res) => {
   let responseMessage = null;
   try {
@@ -45,8 +48,8 @@ employeesRouter.delete("/edit/:id", async (req, res) => {
 
 // Action: POST
 // Entry Point: localhost:port/employees/new
-// Info: Create new employee and send it to the mongo db
-employeesRouter.post("/new", async (req,res) => {
+// Info: Create new employee and send it to the collection
+employeesRouter.post("/new", async (req, res) => {
   let responseMessage = null;
   try {
     responseMessage = await employeesBLL.addEmployee(req.body);
@@ -54,7 +57,7 @@ employeesRouter.post("/new", async (req,res) => {
   } catch (err) {
     return res.status(501).send(err.name);
   }
-})
+});
 
 // Action: GET
 // Entry Point: localhost:port/employees
@@ -67,14 +70,41 @@ employeesRouter.get("/", async (req, res) => {
 // Action: GET
 // Entry Point: localhost:port/employees/not_in/department/:id
 // Info: Get all employees data that are not in a specific department
-employeesRouter.get("/not_in/department/:id", async (req,res) => {
-  try{
-  const employees = await employeesBLL.getAllEmployeesNotInDepartment(req.params.id)
-  res.status(201).send(employees);
-  }catch(err){
-    console.log(`EmployeesRouter : ${err.message}`)
-    res.status(201).send(`${err.message}`);
+employeesRouter.get("/not_in/department/:id", async (req, res) => {
+  try {
+    const employees = await employeesBLL.getAllEmployeesNotInDepartment(
+      req.params.id
+    );
+    res.status(201).send(employees);
+  } catch (err) {
+    console.log(`EmployeesRouter : ${err.message}`);
+    res.status(501).send(`${err.message}`);
   }
-})
+});
+
+// Action: GET
+// Entry Point: localhost:port/employees/:id/switch/department/
+// Info: Get all employees data that are not in a specific department
+employeesRouter.put("/:id/switch/department/", async (req, res) => {
+  try {
+    const response = await employeesBLL.updateEmployeeDepartment(
+      req.params.id,
+      req.body
+    );
+    console.log(
+      `EmployeesRouter : Switched departments for employee ${req.params.id}`
+    );
+    res.status(201).send("Department updated!");
+  } catch (err) {
+    console.log(
+      `EmployeesRouter : Switching departments for employee ${req.params.id} failed! message:${err.message}`
+    );
+    res
+      .status(501)
+      .send(
+        `Switching departments for employee ${req.params.id} failed! message:${err.name}`
+      );
+  }
+});
 
 module.exports = employeesRouter;

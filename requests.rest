@@ -77,3 +77,12 @@ GET http://localhost:3000/departments/edit/65152a987e50224abf3be89a
 ###
 # Employees - All employees that are not in a certain department
 GET http://localhost:3000/employees/not_in/department/65152a987e50224abf3be89a
+
+###
+# Update employee's department on mongo db employees collection
+PUT http://localhost:3000/employees/651d72405f4eac8ff5b15717/switch/department/
+content-type: application/json
+
+  {
+    "departmentID": "65152ad27e50224abf3be89b"
+  }
