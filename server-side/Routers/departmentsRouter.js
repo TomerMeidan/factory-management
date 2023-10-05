@@ -30,7 +30,7 @@ departmentsRouter.put("/edit/:id", async (req, res) => {
   }
 });
 
-// TODO Action: DELETE
+// Action: DELETE
 // Entry Point: localhost:port/departments/edit/:id
 // Info: Delete requested department from collection by id field
 departmentsRouter.delete("/edit/:id", async (req, res) => {
@@ -43,13 +43,13 @@ departmentsRouter.delete("/edit/:id", async (req, res) => {
   }
 });
 
-// TODO Action: POST
+// Action: POST
 // Entry Point: localhost:port/employees/new
-// Info: Create new employee and send it to the mongo db
+// Info: Create new department and send it to the mongo db
 departmentsRouter.post("/new", async (req,res) => {
   let responseMessage = null;
   try {
-    responseMessage = await departmentsBLL.addEmployee(req.body);
+    responseMessage = await departmentsBLL.addDepartment(req.body);
     return res.status(201).json(responseMessage);
   } catch (err) {
     return res.status(501).send(err.name);

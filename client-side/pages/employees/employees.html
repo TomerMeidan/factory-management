@@ -13,7 +13,13 @@
     </style>
   </head>
   <body onload="getAllUsersHandler()">
-    <div id="header"></div>
+    <h1 style="text-align: center;">Factory Management Site</h1>
+    <button onclick="location.href = '../welcome.html';">Homepage</button>
+    <button onclick="location.href = './employees.html'">Employees</button>
+    <button onclick="location.href = '../departments/departments.html';">Departments</button>
+    <button>Shifts</button>
+    <button>Users</button>
+    <button>Logout</button>
     <h3 id="user-name"></h3>
 
     <label for="department">Filter employees by department:</label>
@@ -21,19 +27,12 @@
     <select name="departments" id="departments" onclick="">
       <option value="all">All</option>
     </select>
-    <button onclick="location.href = './new-employee.html'">Add New Employee</button>
-  </br></br>
+    <button onclick="location.href = './new-employee.html'">
+      Add New Employee
+    </button>
+    <br /><br />
 
     <table id="users-table"></table>
-
-    <script>
-      fetch('./employees-header.html')
-        .then(response => response.text())
-        .then(html => {
-          document.getElementById('header').innerHTML = html;
-        });
-  
-    </script>
 
     <script>
       let users = null;
@@ -61,7 +60,7 @@
         updatedUsersList.forEach((user) => {
           // We are adding at the end
           let row = usersTable.insertRow(-1);
-          row.setAttribute('id', `${user._id}`);
+          row.setAttribute("id", `${user._id}`);
 
           // Create table cells
           let fullNameCell = row.insertCell(0);
@@ -69,11 +68,11 @@
           let shiftsCell = row.insertCell(2);
 
           fullNameCell.addEventListener("click", (event) => {
-            const cellTarget = event.target
-            const row = cellTarget.closest('tr')
+            const cellTarget = event.target;
+            const row = cellTarget.closest("tr");
 
-            sessionStorage['editEmployeeID'] = row.id
-            location.href = './edit-employee.html'
+            sessionStorage["editEmployeeID"] = row.id;
+            location.href = "./edit-employee.html";
           });
 
           fullNameCell.innerHTML = `<a href="javascript: void(0)"> ${user.firstName} ${user.lastName}</a>`;

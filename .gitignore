@@ -1,1 +1,6 @@
+# Fodlers
 node_modules
+
+# Files
+app.log
+requests.rest

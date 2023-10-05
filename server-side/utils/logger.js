@@ -1,7 +1,7 @@
 // logger.js
 
 const fs = require("fs");
-const logFile = fs.createWriteStream("./app.log", { flags: "a" });
+const logFile = fs.createWriteStream("./app.log", { flags: "w" });
 
 const originalLog = console.log;
 

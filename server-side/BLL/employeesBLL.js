@@ -49,7 +49,10 @@ const updateEmployeeByID = async (id, data) => {
   const response = await employeeModel
     .findOneAndUpdate({ _id: id }, data)
     .then(() => {
-      return "Shift added!";
+      console.log(
+        `Employee (id: ${id}) information was updated in the system`
+      );
+      return `Employee (id: ${id}) information was updated in the system`;
     })
     .catch((err) => {
       console.log(

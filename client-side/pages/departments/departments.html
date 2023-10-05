@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Departments</title>
+    <style>
+      table,
+      th,
+      td {
+        border: 1px solid black;
+      }
+    </style>
+  </head>
+  <body onload="getAllUsersHandler()">
+    <h1 style="text-align: center">Factory Management Site</h1>
+    <button onclick="location.href = '../welcome.html';">Homepage</button>
+    <button onclick="location.href = '../employees/employees.html'">Employees</button>
+    <button onclick="location.href = './departments.html';">Departments</button>
+    <button>Shifts</button>
+    <button>Users</button>
+    <button>Logout</button>
+
+    <h3 id="user-name"></h3>
+
+    <button onclick="location.href = './new-department.html'">
+      Add New Department
+    </button>
+    <br /><br />
+    <table id="users-table"></table>
+
+    <script>
+      let departmentsData = null;
+      let clickCount = 0;
+
+      function buildUsersTable() {
+        let usersTable = document.getElementById("users-table");
+        usersTable.innerHTML = `    <table id="users-table">
+      <tr>
+        <th id="department">Department</th>
+        <th id="manager">Manager</th>
+        <th id="employees">Employees</th>
+      </tr>
+    </table>`;
+
+        departmentsData.forEach((department) => {
+          // We are adding at the end
+          let row = usersTable.insertRow(-1);
+          row.setAttribute("departmentID", `${department._id}`);
+
+          // Create table cells
+          let departmentCell = row.insertCell(0);
+          let managerCell = row.insertCell(1);
+          let employeesCell = row.insertCell(2);
+
+          departmentCell.addEventListener("click", (event) => {
+            const cellTarget = event.target;
+            const departmentRow = cellTarget.closest("tr");
+
+            sessionStorage["editDepartmentID"] = departmentRow.departmentID;
+            location.href = "./edit-department.html";
+          });
+
+          departmentCell.innerHTML = `<a href="javascript: void(0)">${department.name}</a>`;
+          managerCell.innerHTML = `${department.manager[0].firstName} ${department.manager[0].lastName}`;
+
+          department.employees.forEach((employee) => {
+            const employeeLink = document.createElement("li");
+            employeeLink.innerHTML = `<a href="javascript: void(0)">${employee.firstName} ${employee.lastName}</a>`;
+            employeeLink.setAttribute("id", `${employee._id}`);
+
+            employeeLink.addEventListener("click", (event) => {
+              const cellTarget = event.target;
+              const employee = cellTarget.closest("li");
+              sessionStorage["editEmployeeID"] = employee.id;
+              location.href = "../employees/edit-employee.html";
+            });
+
+            employeesCell.appendChild(employeeLink);
+          });
+        });
+      }
+
+      async function getAllUsersHandler() {
+        const response = await fetch("http://localhost:3000/departments", {
+          method: "GET",
+        });
+        departmentsData = await response.json();
+        buildUsersTable();
+
+        // TODO Use session to store the incoming user data
+        const name = sessionStorage["name"];
+        const welcome = (document.getElementById(
+          "user-name"
+        ).innerText = `Welcome, ${name || ""}`);
+      }
+    </script>
+  </body>
+</html>
