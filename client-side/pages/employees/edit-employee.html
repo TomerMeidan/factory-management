@@ -36,7 +36,7 @@
 
     <p id="responseFromServer"></p>
     <script>
-      fetch('./header.html')
+      fetch('./employees-header.html')
         .then(response => response.text())
         .then(html => {
           document.getElementById('header').innerHTML = html;

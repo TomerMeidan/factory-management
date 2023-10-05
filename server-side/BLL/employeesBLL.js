@@ -36,7 +36,6 @@ const deleteEmployeeByID = async (id) => {
   return `The employee is deleted from the system!`;
 };
 
-// TODO Fix that only one shift can be added
 // Update an employee by his id field in the employees collection
 const updateEmployeeByID = async (id, data) => {
   let department = null;

@@ -1,0 +1,4 @@
+[2023-10-05T07:50:35.452Z]: Factory Management Server is listening on port 3000...
+[2023-10-05T07:50:35.467Z]: Database is connected to mongodb://127.0.0.1:27017/factory-users
+[2023-10-05T07:51:27.945Z]: EmployeeBLL: addEmployee: Error finding given department by user, errorMessage:Cannot read properties of undefined (reading '_id')
+[2023-10-05T07:52:47.008Z]: EmployeeBLL: addEmployee: New employee inserted!

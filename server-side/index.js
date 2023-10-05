@@ -1,6 +1,7 @@
 // This is the main entry point of the Factory Management backend
 
 // NPM Library Imports
+require('./utils/logger');
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
@@ -44,7 +45,7 @@ app.use("/login", loginRouter);
 // Employees router page related requests
 app.use("/employees", employeesRouter);
 
-// TODO Departments router page related requests
+// Departments router page related requests
 app.use("/departments", departmentsRouter);
 
 // TODO Shifts router page related requests

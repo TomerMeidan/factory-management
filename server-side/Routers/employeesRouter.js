@@ -17,7 +17,7 @@ employeesRouter.get("/edit/:id", async (req, res) => {
   }
 });
 
-// TODO Action: PUT
+// Action: PUT
 // Entry Point: localhost:port/employees/edit/:id
 // Info: Update an employee with new information
 employeesRouter.put("/edit/:id", async (req, res) => {
