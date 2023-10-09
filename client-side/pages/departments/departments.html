@@ -46,7 +46,7 @@
         departmentsData.forEach((department) => {
           // We are adding at the end
           let row = usersTable.insertRow(-1);
-          row.setAttribute("departmentID", `${department._id}`);
+          row.setAttribute("id", `${department._id}`);
 
           // Create table cells
           let departmentCell = row.insertCell(0);
@@ -57,7 +57,7 @@
             const cellTarget = event.target;
             const departmentRow = cellTarget.closest("tr");
 
-            sessionStorage["editDepartmentID"] = departmentRow.departmentID;
+            sessionStorage["editDepartmentID"] = departmentRow.id;
             location.href = "./edit-department.html";
           });
 
@@ -65,13 +65,13 @@
           managerCell.innerHTML = `${department.manager[0].firstName} ${department.manager[0].lastName}`;
 
           department.employees.forEach((employee) => {
-            const employeeLink = document.createElement("li");
+            const employeeLink = document.createElement("div");
             employeeLink.innerHTML = `<a href="javascript: void(0)">${employee.firstName} ${employee.lastName}</a>`;
             employeeLink.setAttribute("id", `${employee._id}`);
 
             employeeLink.addEventListener("click", (event) => {
               const cellTarget = event.target;
-              const employee = cellTarget.closest("li");
+              const employee = cellTarget.closest("div");
               sessionStorage["editEmployeeID"] = employee.id;
               location.href = "../employees/edit-employee.html";
             });

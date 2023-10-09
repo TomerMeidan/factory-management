@@ -44,7 +44,7 @@ departmentsRouter.delete("/edit/:id", async (req, res) => {
 });
 
 // Action: POST
-// Entry Point: localhost:port/employees/new
+// Entry Point: localhost:port/departments/new
 // Info: Create new department and send it to the mongo db
 departmentsRouter.post("/new", async (req,res) => {
   let responseMessage = null;

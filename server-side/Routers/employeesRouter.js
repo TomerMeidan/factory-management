@@ -92,9 +92,9 @@ employeesRouter.put("/:id/switch/department/", async (req, res) => {
       req.body
     );
     console.log(
-      `EmployeesRouter : Switched departments for employee ${req.params.id}`
+      `EmployeesRouter : Department switched for employee ${req.params.id}`
     );
-    res.status(201).send("Department updated!");
+    res.json(`Department switched for employee ${req.params.id}`);
   } catch (err) {
     console.log(
       `EmployeesRouter : Switching departments for employee ${req.params.id} failed! message:${err.message}`
