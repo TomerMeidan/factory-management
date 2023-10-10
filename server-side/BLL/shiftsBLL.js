@@ -6,7 +6,7 @@ const shiftModel = require("../model/shiftModel");
 // Get all shifts that exist in the system
 const getAllShifts = async () => {
   try {
-    return await shiftModel.find();
+    return await shiftModel.find().sort([["date", -1]]);
   } catch (err) {
     return err.message;
   }

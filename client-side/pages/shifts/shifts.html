@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Shifts - Main</title>
+    <style>
+      table,
+      th,
+      td {
+        border: 1px solid black;
+        padding: 10px;
+      }
+    </style>
+  </head>
+  <body onload="getAllShiftsHandler()">
+    <h1 style="text-align: center">Factory Management Site</h1>
+    <button onclick="location.href = '../welcome.html';">Homepage</button>
+    <button onclick="location.href = '../employees/employees.html'">Employees</button>
+    <button onclick="location.href = '../departments/departments.html';">Departments</button>
+    <button onclick="location.href = './shifts.html'">Shifts</button>
+    <button>Users</button>
+    <button>Logout</button>
+
+    <h3 id="user-name"></h3>
+
+    <button onclick="location.href = './new-shift.html'">
+      Add New Shift
+    </button>
+    <br /><br />
+    <table id="shifts-table"></table>
+
+    <script>
+      let shiftsData = null;
+      let clickCount = 0;
+
+      function buildShiftsTable() {
+        let usersTable = document.getElementById("shifts-table");
+        usersTable.innerHTML = `    <table id="shifts-table">
+      <tr>
+        <th id="shiftID">Shift ID</th>
+        <th id="date">Date</th>
+        <th id="startingHour">Starting Hour</th>
+        <th id="endingHour">Ending Hour</th>
+      </tr>
+    </table>`;
+
+        shiftsData.forEach((shift) => {
+          // We are adding at the end
+          let row = usersTable.insertRow(-1);
+          row.setAttribute("id", `${shift._id}`);
+
+          // Create table cells
+          let shiftIDCell = row.insertCell(0);
+          let shiftDateCell = row.insertCell(1);
+          let shiftStartingHourCell = row.insertCell(2);
+          let shiftEndingHourCell = row.insertCell(3);
+          
+          shiftIDCell.innerHTML = `<a href="javascript: void(0)">${shift._id}</a>`;
+          shiftIDCell.addEventListener("click", (event) => {
+            sessionStorage["editShiftID"] = shiftIDCell.value;
+            location.href = "./edit-shift.html";
+          });
+          shiftDateCell.innerHTML =`${shift.date}`;
+          shiftStartingHourCell.innerHTML = `${shift.date}`;
+          shiftStartingHourCell.innerHTML = `${shift.startingHour}`
+          shiftEndingHourCell.innerHTML = `${shift.endingHour}`
+        });
+      }
+
+      async function getAllShiftsHandler() {
+        const response = await fetch("http://localhost:3000/shifts", {
+          method: "GET",
+        });
+        shiftsData = await response.json();
+        buildShiftsTable();
+
+        // TODO Use session to store the incoming user data
+        const name = sessionStorage["name"];
+        const welcome = (document.getElementById(
+          "user-name"
+        ).innerText = `Welcome, ${name || ""}`);
+      }
+    </script>
+  </body>
+</html>
