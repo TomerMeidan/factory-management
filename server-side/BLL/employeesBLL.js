@@ -2,6 +2,7 @@
 const employeeModel = require("../model/employeeModel");
 const departmentModel = require("../model/departmentModel");
 const shiftModel = require("../model/shiftModel");
+const mongoose = require('mongoose');
 
 // Get employee with department and shift list (by ID)
 const getEmployeeByID = async (id) => {
@@ -49,9 +50,7 @@ const updateEmployeeByID = async (id, data) => {
   const response = await employeeModel
     .findOneAndUpdate({ _id: id }, data)
     .then(() => {
-      console.log(
-        `Employee (id: ${id}) information was updated in the system`
-      );
+      console.log(`Employee (id: ${id}) information was updated in the system`);
       return `Employee (id: ${id}) information was updated in the system`;
     })
     .catch((err) => {
@@ -101,6 +100,22 @@ const getAllEmployeesNotInDepartment = async (departmentID) => {
   return employees;
 };
 
+const removeDepartment = async (departmentID) => {
+  // Convert departmentID to ObjectId
+  const departmentObjectId = new mongoose.Types.ObjectId(departmentID);
+
+  // Update all employees, setting departmentID to null
+  await employeeModel.updateMany({
+    departmentID: departmentObjectId
+  }, {
+
+      departmentID: "6523c5feede9cb34c54ca21d" // Default department
+    
+  });
+
+  return "Department was deleted for all corresponding employees";
+};
+
 const updateEmployeeDepartment = async (employeeID, data) => {
   const departmentID = { departmentID: data.departmentID };
   await employeeModel
@@ -124,4 +139,5 @@ module.exports = {
   addEmployee,
   getAllEmployeesNotInDepartment,
   updateEmployeeDepartment,
+  removeDepartment,
 };

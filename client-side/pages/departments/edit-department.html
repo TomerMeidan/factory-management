@@ -24,15 +24,11 @@
     <button>Logout</button>
     <h3 id="user-name"></h3>
 
-    Department Name:
-    <input type="text" id="department" value="Marketing" /><br /><br />
-    Department ID:
-    <input type="text" id="departmentID" value="1111" readonly /> (read only)<br /><br />
+    Department Name:<input type="text" id="department" value="Marketing" /><br /><br />
+    Department ID:<input type="text" id="departmentID" value="1111" readonly /> (read only)<br /><br />
     <p>Manager Information:</p>
     ID: <input type="text" id="employeeID" value="1111" /><br /><br />
-    Name:
-    <input type="text" id="fullName" value="John Doe" readonly /> (readonly)
-    <br /><br />
+    Name:<input type="text" id="fullName" value="John Doe" readonly /> (read only)<br /><br />
 
     <button onclick="updateDepartment()">Update Department</button>
 
@@ -51,16 +47,13 @@
       };
 
       async function updateDepartment() {
-        const id = sessionStorage["editEmployeeID"];
+        const id = sessionStorage["editDepartmentID"];
         const data = {
-          firstName: document.getElementById("firstName").value,
-          lastName: document.getElementById("lastName").value,
-          startWorkYear: document.getElementById("startWorkYear").value,
-          departmentName: document.getElementById("department").value,
-          shifts: newShiftsForEmployee.shifts,
+          name: document.getElementById("department").value,
+          manager: document.getElementById("employeeID").value,
         };
         const response = await fetch(
-          `http://localhost:3000/employees/edit/${id}`,
+          `http://localhost:3000/departments/edit/${id}`,
           {
             method: "PUT",
             headers: {
@@ -74,16 +67,31 @@
       }
 
       async function deleteDepartment() {
-        const id = sessionStorage["editEmployeeID"];
+        const id = sessionStorage["editDepartmentID"];
+        
+        // Delete the department from the system
 
         const response = await fetch(
-          `http://localhost:3000/employees/edit/${id}`,
+          `http://localhost:3000/departments/edit/${id}`,
           {
             method: "DELETE",
           }
         );
-        const user = await response.json();
-        document.getElementById("responseFromServer").innerText = user;
+        const responseFromServer = await response.json();
+        document.getElementById("responseFromServer").innerText = responseFromServer;
+
+        // TODO Delete the department in all the employees documents in employees collection
+
+        response = await fetch(
+          `http://localhost:3000/employees/remove/department/${id}`,
+          {
+            method: "PUT",
+          }
+        );
+
+        responseFromServer = await response.json();
+        document.getElementById("responseFromServer").innerText += `\n${responseFromServer}`;
+
       }
 
       async function init() {

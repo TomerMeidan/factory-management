@@ -21,10 +21,11 @@ const deleteDepartmentByID = async (id) => {
     return `The department (id: ${id}) doesn't exist in the system!`;
   }
   await departmentModel.deleteOne({ _id: id });
+
   console.log(
     `DepartmentBLL: deleteDepartmentByID: The department (id: ${id}) is deleted from the system!`
   );
-  return `The department is deleted from the system!`;
+  return `The department (id: ${id}) is deleted from the system!`;
 };
 
 // Update a department by the id field in the departments collection
@@ -49,6 +50,10 @@ const updateDepartmentByID = async (id, data) => {
 
 // Add a new department to the system
 const addDepartment = async (departmentData) => {
+  const result = await departmentModel.find({ name: departmentData.name })
+
+  if(result.length > 0)
+    return 'Department name already exists in the system!'
   try {
     const department = new departmentModel(departmentData);
     await department.save();

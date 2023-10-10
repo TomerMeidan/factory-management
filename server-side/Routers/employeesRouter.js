@@ -59,6 +59,19 @@ employeesRouter.post("/new", async (req, res) => {
   }
 });
 
+// Action: PUT
+// Entry Point: localhost:port/employees/remove/department/:id
+// Info: Delete department from all employees documents
+employeesRouter.put("/remove/department/:id", async (req,res) => {
+  try {
+    const response = await employeesBLL.removeDepartment(req.params.id);
+    res.status(201).json(response);
+  } catch (err) {
+    console.log(`EmployeesRouter : ${err.message}`);
+    res.status(501).send(`${err.message}`);
+  }
+})
+
 // Action: GET
 // Entry Point: localhost:port/employees
 // Info: Get all employees data (Full name, Department and his shifts)
