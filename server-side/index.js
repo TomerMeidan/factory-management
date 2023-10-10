@@ -16,7 +16,7 @@ const employeesRouter = require("./routers/employeesRouter");
 const shiftsRouter = require("./routers/shiftsRouter");
 const departmentsRouter = require("./routers/departmentsRouter");
 
-// TODO add authenticateToken later on all routers
+// TODO Add authenticateToken later on to all routers
 const authenticateToken = (req, res, next) => {
   // Middleware to authenticate the token on user actions
   // Token header ['authorization' Bearer TOKEN]
@@ -50,6 +50,8 @@ app.use("/departments", departmentsRouter);
 
 // TODO Shifts router page related requests
 app.use("/shifts", shiftsRouter);
+
+// TODO Users router page related requests
 
 // Server Connection
 app.listen(process.env.PORT, async () => {
