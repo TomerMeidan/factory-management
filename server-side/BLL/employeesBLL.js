@@ -2,22 +2,36 @@
 const employeeModel = require("../model/employeeModel");
 const departmentModel = require("../model/departmentModel");
 const shiftModel = require("../model/shiftModel");
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 // Get employee with department and shift list (by ID)
 const getEmployeeByID = async (id) => {
   const employee = await employeeModel
     .findById(id)
-    .populate("departmentID")
-    .populate("shifts");
+    .populate({
+      path: "departmentID",
+    })
+    .populate({
+      path: "shifts",
+      options: {
+        sort: { date: -1 },
+      },
+    });
   return employee;
 };
 // Get all employees with department and shift list
 const getAllEmployees = async () => {
   const employees = await employeeModel
     .find()
-    .populate("departmentID")
-    .populate("shifts");
+    .populate({
+      path: "departmentID",
+    })
+    .populate({
+      path: "shifts",
+      options: {
+        sort: { date: -1 },
+      },
+    });
   return employees;
 };
 
@@ -105,13 +119,14 @@ const removeDepartment = async (departmentID) => {
   const departmentObjectId = new mongoose.Types.ObjectId(departmentID);
 
   // Update all employees, setting departmentID to null
-  await employeeModel.updateMany({
-    departmentID: departmentObjectId
-  }, {
-
-      departmentID: "6523c5feede9cb34c54ca21d" // Default department
-    
-  });
+  await employeeModel.updateMany(
+    {
+      departmentID: departmentObjectId,
+    },
+    {
+      departmentID: "6523c5feede9cb34c54ca21d", // Default department
+    }
+  );
 
   return "Department was deleted for all corresponding employees";
 };

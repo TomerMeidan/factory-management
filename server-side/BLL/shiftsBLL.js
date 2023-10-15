@@ -16,9 +16,9 @@ const getAllShifts = async () => {
 // Add new shift to the system collection
 const addShift = async (shiftData) => {
   // Parse string to Date
-  const dateParts = shiftData.date.split("-");
+  const regex = /[-/]/; 
+  const dateParts = shiftData.date.split(regex);
   const jsDate = `${dateParts[0]}-${dateParts[1]}-${dateParts[2]}`
-  console.log(jsDate); 
 
   shiftData.date = jsDate;
   const result = await shiftModel.find(shiftData);
