@@ -16,7 +16,9 @@
   <body onload="getAllUsersHandler()">
     <h1 style="text-align: center">Factory Management Site</h1>
     <button onclick="location.href = '../welcome.html';">Homepage</button>
-    <button onclick="location.href = '../employees/employees.html'">Employees</button>
+    <button onclick="location.href = '../employees/employees.html'">
+      Employees
+    </button>
     <button onclick="location.href = './departments.html';">Departments</button>
     <button onclick="location.href = '../shifts/shifts.html'">Shifts</button>
     <button>Users</button>
@@ -45,40 +47,42 @@
     </table>`;
 
         departmentsData.forEach((department) => {
-          // We are adding at the end
-          let row = usersTable.insertRow(-1);
-          row.setAttribute("id", `${department._id}`);
+          if (department.name != "NONE") {
+            // We are adding at the end
+            let row = usersTable.insertRow(-1);
+            row.setAttribute("id", `${department._id}`);
 
-          // Create table cells
-          let departmentCell = row.insertCell(0);
-          let managerCell = row.insertCell(1);
-          let employeesCell = row.insertCell(2);
+            // Create table cells
+            let departmentCell = row.insertCell(0);
+            let managerCell = row.insertCell(1);
+            let employeesCell = row.insertCell(2);
 
-          departmentCell.addEventListener("click", (event) => {
-            const cellTarget = event.target;
-            const departmentRow = cellTarget.closest("tr");
-
-            sessionStorage["editDepartmentID"] = departmentRow.id;
-            location.href = "./edit-department.html";
-          });
-
-          departmentCell.innerHTML = `<a href="javascript: void(0)">${department.name}</a>`;
-          managerCell.innerHTML = `${department.manager[0].firstName} ${department.manager[0].lastName}`;
-
-          department.employees.forEach((employee) => {
-            const employeeLink = document.createElement("div");
-            employeeLink.innerHTML = `<a href="javascript: void(0)">${employee.firstName} ${employee.lastName}</a>`;
-            employeeLink.setAttribute("id", `${employee._id}`);
-
-            employeeLink.addEventListener("click", (event) => {
+            departmentCell.addEventListener("click", (event) => {
               const cellTarget = event.target;
-              const employee = cellTarget.closest("div");
-              sessionStorage["editEmployeeID"] = employee.id;
-              location.href = "../employees/edit-employee.html";
+              const departmentRow = cellTarget.closest("tr");
+
+              sessionStorage["editDepartmentID"] = departmentRow.id;
+              location.href = "./edit-department.html";
             });
 
-            employeesCell.appendChild(employeeLink);
-          });
+            departmentCell.innerHTML = `<a href="javascript: void(0)">${department.name}</a>`;
+            managerCell.innerHTML = `${department.manager[0].firstName} ${department.manager[0].lastName}`;
+
+            department.employees.forEach((employee) => {
+              const employeeLink = document.createElement("div");
+              employeeLink.innerHTML = `<a href="javascript: void(0)">${employee.firstName} ${employee.lastName}</a>`;
+              employeeLink.setAttribute("id", `${employee._id}`);
+
+              employeeLink.addEventListener("click", (event) => {
+                const cellTarget = event.target;
+                const employee = cellTarget.closest("div");
+                sessionStorage["editEmployeeID"] = employee.id;
+                location.href = "../employees/edit-employee.html";
+              });
+
+              employeesCell.appendChild(employeeLink);
+            });
+          }
         });
       }
 

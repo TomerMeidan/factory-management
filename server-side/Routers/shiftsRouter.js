@@ -16,7 +16,7 @@ shiftsRouter.get("/", async (req, res) => {
 // Entry Point: localhost:port/shifts/new
 // Info: Add a new shift to the shifts collection
 shiftsRouter.post("/new", async (req, res) => {
-  const responseMessage = await shiftsBLL.addShift();
+  const responseMessage = await shiftsBLL.addShift(req.body);
   res.status(201).json(responseMessage);
 });
 

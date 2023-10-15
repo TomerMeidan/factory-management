@@ -12,51 +12,147 @@
       }
     </style>
   </head>
-  <body onload="addNewDepartmentOnLoadHandler()">
+  <body onload="init()">
     <h1 style="text-align: center">Factory Management Site</h1>
     <button onclick="location.href = '../welcome.html';">Homepage</button>
-    <button onclick="location.href = '../employees/employees.html'">Employees</button>
-    <button onclick="location.href = './departments.html';">Departments</button>
+    <button onclick="location.href = '../employees/employees.html'">
+      Employees
+    </button>
+    <button onclick="location.href = '../departments/departments.html';">
+      Departments
+    </button>
     <button onclick="location.href = './shifts.html'">Shifts</button>
     <button>Users</button>
     <button>Logout</button>
     <h3 id="user-name"></h3>
 
-    Department Name: <input type="text" id="departmentName" value="Blank" /> <br /><br />
+    <p><strong>Please Note:</strong></p>
+    <ul>
+      <li>
+        Date format: <strong>year-month-day</strong> or
+        <strong>year/month/day</strong>
+      </li>
+      <li>
+        Date format: All single digit months or days
+        <strong>must have a leading 0</strong>
+      </li>
+      <li>Hour format: Only characters between <strong>0 - 23</strong></li>
+      <li>
+        <strong
+          >** Make sure the date and hours values don't exist together in the
+          system already</strong
+        >
+      </li>
+    </ul>
 
-    <!--TODO Check if the department name is taken on backend-->
+    Starting Hour :
+    <input type="text" id="shiftStartingHour" value="0" /> (format:
+    <b>0 - 23</b>) <br /><br />
+    Ending Hour : <input type="text" id="shiftEndingHour" value="0" /> (format:
+    <b>0 - 23</b>) <br /><br />
+    Shift Starting Date :
+    <input type="text" id="shiftStartingDate" value="1994-12-20" /> <br /><br />
 
-    <button onclick="saveDepartment()">Save</button>
+    <!--TODO Check if the shift data is taken on backend-->
 
-    <button onclick="location.href = './departments.html';">Cancel</button>
+    <button onclick="saveShift()">Save</button>
+
+    <button onclick="location.href = './shifts.html';">Cancel</button>
 
     <p id="responseFromServer"></p>
-    
+
     <script>
-      async function saveDepartment() {
-        const data = {
-          name: document.getElementById("departmentName").value,
+      async function saveShift() {
+        const dateString = document.getElementById("shiftStartingDate").value;
+        const startingHourString =
+          document.getElementById("shiftStartingHour").value;
+        const endingHourString =
+          document.getElementById("shiftEndingHour").value;
+
+        // Validating hours syntax
+        if (!hoursAreValid(startingHourString, endingHourString)) {
+          document.getElementById("responseFromServer").innerText =
+            "Hours format isn't valid!";
+          return;
+        }
+
+        // Validating date syntax
+        if (!dateIsValid(dateString)) {
+          document.getElementById("responseFromServer").innerText =
+            "Date format isn't valid!";
+          return;
+        }
+
+        // From here on date and hours are valid
+
+        const dateData = {
+          date: document.getElementById("shiftStartingDate").value,
+          startingHour: document.getElementById("shiftStartingHour").value,
+          endingHour: document.getElementById("shiftEndingHour").value,
         };
-        const response = await fetch(`http://localhost:3000/departments/new`, {
+        const response = await fetch(`http://localhost:3000/shifts/new`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(data),
+          body: JSON.stringify(dateData),
         });
         const responseMessage = await response.json();
-        document.getElementById("responseFromServer").innerText = responseMessage
-         
+        document.getElementById("responseFromServer").innerText =
+          responseMessage;
       }
 
-      async function addNewDepartmentOnLoadHandler() {
+      function hoursAreValid(start, end) {
+        const startingHour = parseInt(start);
+        const endingHour = parseInt(end);
+
+        if (
+          startingHour < 0 ||
+          startingHour > 23 ||
+          endingHour < 0 ||
+          endingHour > 23
+        )
+          return false;
+
+        if (startingHour >= endingHour) return false;
+
+        return true;
+      }
+
+      function dateIsValid(dateString) {
+        // Check for YYYY-MM-DD format
+        if (dateString.match(/^\d{4}-\d{2}-\d{2}$/)) {
+          const parts = dateString.split("-");
+          const year = parseInt(parts[0]);
+          const month = parseInt(parts[1]);
+          const day = parseInt(parts[2]);
+
+          if (day >= 1 && day <= 31 && month >= 1 && month <= 12) {
+            return true;
+          }
+
+          // Check for YYYY/MM/DD format
+        } else if (dateString.match(/^\d{4}\/\d{2}\/\d{2}$/)) {
+          const parts = dateString.split("/");
+          const year = parseInt(parts[0]);
+          const month = parseInt(parts[1]);
+          const day = parseInt(parts[2]);
+
+          if (day >= 1 && day <= 31 && month >= 1 && month <= 12) {
+            return true;
+          }
+        }
+
+        return false;
+      }
+
+      async function init() {
         // TODO Use session to store the incoming user data
         const name = sessionStorage["name"];
         const welcome = (document.getElementById(
           "user-name"
         ).innerText = `Welcome, ${name || ""}`);
       }
-
     </script>
   </body>
 </html>

@@ -2,6 +2,7 @@
 const employeeModel = require("../model/employeeModel");
 const departmentModel = require("../model/departmentModel");
 const shiftModel = require("../model/shiftModel");
+const mongoose = require("mongoose");
 
 // Get all shifts that exist in the system
 const getAllShifts = async () => {
@@ -14,6 +15,15 @@ const getAllShifts = async () => {
 
 // Add new shift to the system collection
 const addShift = async (shiftData) => {
+  // Parse string to Date
+  const dateParts = shiftData.date.split("-");
+  const jsDate = `${dateParts[0]}-${dateParts[1]}-${dateParts[2]}`
+  console.log(jsDate); 
+
+  shiftData.date = jsDate;
+  const result = await shiftModel.find(shiftData);
+  if (result.length > 0) return "This shift already exists in the system!";
+
   try {
     const shift = new shiftModel(shiftData);
     await shift.save();

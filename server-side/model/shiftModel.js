@@ -5,9 +5,9 @@ const schema = mongoose.Schema;
 // Shift Schema
 
 const shiftSchema = new schema({
-  data: mongoose.Schema.Types.Date,
+  date: String,
   startingHour: Number,
   endingHour: Number,
-});
+},{ versionKey: false });
 
 module.exports = mongoose.model("shift", shiftSchema, "shifts");
