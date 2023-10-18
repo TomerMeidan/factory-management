@@ -15,12 +15,12 @@
   </head>
   <body onload="getAllUsersHandler()">
     <h1 style="text-align: center;">Factory Management Site</h1>
-    <button onclick="location.href = '../welcome.html';">Homepage</button>
-    <button onclick="location.href = './employees.html'">Employees</button>
-    <button onclick="location.href = '../departments/departments.html';">Departments</button>
-    <button onclick="location.href = '../shifts/shifts.html'">Shifts</button>
+    <button onclick="location.href = '/welcome';">Homepage</button>
+    <button onclick="location.href = 'employees'">Employees</button>
+    <button onclick="location.href = '/departments/getPage/departments';">Departments</button>
+    <button onclick="location.href = '/shifts/getPage/shifts'">Shifts</button>
     <button>Users</button>
-    <button>Logout</button>
+    <button onclick="location.href = '/login/logout'">Logout</button>
     <h3 id="user-name"></h3>
 
     <label for="department">Filter employees by department:</label>
@@ -28,7 +28,7 @@
     <select name="departments" id="departments" onclick="">
       <option value="all">All</option>
     </select>
-    <button onclick="location.href = './new-employee.html'">
+    <button onclick="location.href = 'new-employee'">
       Add New Employee
     </button>
     <br /><br />
@@ -73,7 +73,16 @@
             const row = cellTarget.closest("tr");
 
             sessionStorage["editEmployeeID"] = row.id;
-            location.href = "./edit-employee.html";
+            location.href = "edit-employee";
+          });
+
+          // TODO Fix the navigation to department id
+          departmentCell.addEventListener("click", (event) => {
+            const cellTarget = event.target;
+            const row = cellTarget.closest("tr");
+
+            sessionStorage["editDepartmentID"] = row.id;
+            location.href = "/departments/getPage/edit-department";
           });
 
           fullNameCell.innerHTML = `<a href="javascript: void(0)"> ${user.firstName} ${user.lastName}</a>`;

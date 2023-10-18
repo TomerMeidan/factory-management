@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Departments - Edit</title>
+    <title>Shifts - Edit</title>
     <style>
       table,
       th,
@@ -14,14 +14,12 @@
   </head>
   <body onload="init()">
     <h1 style="text-align: center">Factory Management Site</h1>
-    <button onclick="location.href = '../welcome.html';">Homepage</button>
-    <button onclick="location.href = '../employees/employees.html'">
-      Employees
-    </button>
-    <button onclick="location.href = './departments.html';">Departments</button>
-    <button onclick="location.href = '../shifts/shifts.html'">Shifts</button>
+    <button onclick="location.href = '/welcome';">Homepage</button>
+    <button onclick="location.href = '/employees/getPage/employees'">Employees</button>
+    <button onclick="location.href = '/departments/getPage/departments';">Departments</button>
+    <button onclick="location.href = './shifts'">Shifts</button>
     <button>Users</button>
-    <button>Logout</button>
+    <button onclick="location.href = '/login/logout'">Logout</button>
     <h3 id="user-name"></h3>
 
     Department Name:<input type="text" id="department" value="Marketing" /><br /><br />

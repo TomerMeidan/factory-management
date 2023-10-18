@@ -8,12 +8,12 @@
   <body onload="getProducts()">
 
     <h1 style="text-align: center;">Factory Management Site</h1>
-    <button onclick="location.href = './welcome.html';">Homepage</button>
-    <button onclick="location.href = './employees/employees.html'">Employees</button>
-    <button onclick="location.href = './departments/departments.html'">Departments</button>
-    <button onclick="location.href = './shifts/shifts.html'">Shifts</button>
+    <button onclick="location.href = '/welcome';">Homepage</button>
+    <button onclick="location.href = '/employees/getPage/employees'">Employees</button>
+    <button onclick="location.href = '/departments/getPage/departments';">Departments</button>
+    <button onclick="location.href = '/shifts/getPage/shifts'">Shifts</button>
     <button>Users</button>
-    <button>Logout</button>
+    <button onclick="location.href = '/login/logout'">Logout</button>
 
     <h3 id="user-name"></h3>
     
@@ -56,14 +56,6 @@
       const url = "http://localhost:3000/welcome";
 
       const getProducts = async () => {
-        const accessToken = sessionStorage["accessToken"];
-
-        const resp = await fetch(url, {
-          method: "GET",
-          headers: { authorization: `Bearer ${accessToken}` },
-        });
-
-        const data = await resp.json();
         const name = sessionStorage["name"];
 
         // TODO Use session to store the incoming user data

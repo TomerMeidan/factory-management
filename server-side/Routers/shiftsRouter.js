@@ -5,6 +5,24 @@ const shiftsBLL = require("../BLL/shiftsBLL");
 // Main Entry Point: localhost:port/shifts
 
 // Action: GET
+// Entry Point: localhost:port/shifts/getPage/shifts
+shiftsRouter.get('/getPage/shifts', (req,res) => {
+  res.render("shifts/shifts.html")
+})
+
+// Action: GET
+// Entry Point: localhost:port/shifts/getPage/edit-shift
+shiftsRouter.get('/getPage/edit-shift', (req,res) => {
+  res.render("shifts/edit-shift.html")
+})
+
+// Action: GET
+// Entry Point: localhost:port/shifts/getPage/new-shift
+shiftsRouter.get('/getPage/new-shift', (req,res) => {
+  res.render("shifts/new-shift.html")
+})
+
+// Action: GET
 // Entry Point: localhost:port/shifts
 // Info: Get all shifts from mongodb shifts collection
 shiftsRouter.get("/", async (req, res) => {

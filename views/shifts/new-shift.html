@@ -14,16 +14,12 @@
   </head>
   <body onload="init()">
     <h1 style="text-align: center">Factory Management Site</h1>
-    <button onclick="location.href = '../welcome.html';">Homepage</button>
-    <button onclick="location.href = '../employees/employees.html'">
-      Employees
-    </button>
-    <button onclick="location.href = '../departments/departments.html';">
-      Departments
-    </button>
-    <button onclick="location.href = './shifts.html'">Shifts</button>
+    <button onclick="location.href = '/welcome';">Homepage</button>
+    <button onclick="location.href = '/employees/getPage/employees'">Employees</button>
+    <button onclick="location.href = '/departments/getPage/departments';">Departments</button>
+    <button onclick="location.href = './shifts'">Shifts</button>
     <button>Users</button>
-    <button>Logout</button>
+    <button onclick="location.href = '/login/logout'">Logout</button>
     <h3 id="user-name"></h3>
 
     <p><strong>Please Note:</strong></p>
@@ -57,7 +53,7 @@
 
     <button onclick="saveShift()">Save</button>
 
-    <button onclick="location.href = './shifts.html';">Cancel</button>
+    <button onclick="location.href = './shifts';">Cancel</button>
 
     <p id="responseFromServer"></p>
 

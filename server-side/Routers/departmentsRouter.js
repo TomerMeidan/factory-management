@@ -5,6 +5,24 @@ const departmentsBLL = require("../BLL/departmentsBLL");
 // Main Entry Point: localhost:port/departments
 
 // Action: GET
+// Entry Point: localhost:port/departments/getPage/departments
+departmentsRouter.get('/getPage/departments', (req,res) => {
+  res.render("departments/departments.html")
+})
+
+// Action: GET
+// Entry Point: localhost:port/departments/getPage/edit-department
+departmentsRouter.get('/getPage/edit-department', (req,res) => {
+  res.render("departments/edit-department.html")
+})
+
+// Action: GET
+// Entry Point: localhost:port/departments/getPage/new-department
+departmentsRouter.get('/getPage/new-department', (req,res) => {
+  res.render("departments/new-department.html")
+})
+
+// Action: GET
 // Entry Point: localhost:port/departments/edit/:id
 // Info: Obtain requested department's information for edit
 departmentsRouter.get("/edit/:id", async (req, res) => {

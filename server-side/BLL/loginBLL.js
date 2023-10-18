@@ -1,4 +1,3 @@
-const jwt = require('jsonwebtoken')
 const usersDAL = require('../DAL/web-service/usersDAL')
 
 const checkUserCredentials = async (username,email) => {
@@ -8,5 +7,7 @@ const checkUserCredentials = async (username,email) => {
         return false;
     return user;
 }
+
+
 
 module.exports = {checkUserCredentials}

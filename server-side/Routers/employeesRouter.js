@@ -5,6 +5,24 @@ const employeesBLL = require("../BLL/employeesBLL");
 // Main Entry Point: localhost:port/employees
 
 // Action: GET
+// Entry Point: localhost:port/employees/getPage/employees
+employeesRouter.get('/getPage/employees', (req,res) => {
+  res.render("employees/employees.html")
+})
+
+// Action: GET
+// Entry Point: localhost:port/employees/getPage/edit-employee
+employeesRouter.get('/getPage/edit-employee', (req,res) => {
+  res.render("employees/edit-employee.html")
+})
+
+// Action: GET
+// Entry Point: localhost:port/employees/getPage/new-employee
+employeesRouter.get('/getPage/new-employee', (req,res) => {
+  res.render("employees/new-employee.html")
+})
+
+// Action: GET
 // Entry Point: localhost:port/employees/edit/:id
 // Info: Obtain requested employee's information for edit
 employeesRouter.get("/edit/:id", async (req, res) => {

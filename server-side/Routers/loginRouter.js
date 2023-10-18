@@ -1,84 +1,28 @@
-// Main Entry Point: localhost:PORT/login
+
 
 // Imports
-require("dotenv").config();
 const express = require("express");
 const loginBLL = require("../BLL/loginBLL");
-const jwt = require("jsonwebtoken");
 const loginRouter = express.Router();
+const session = require("express-session");
+const MongoDBSession = require("connect-mongodb-session")(session);
 
-// TODO DO NOT DO THIS IN PRODUCTION
-// Save all refresh tokens in the database for each user
-let refreshTokens = [];
+// Entry Point: localhost:PORT/login
 
-// Refresh Token Handler
-loginRouter.post("/token", (req, res) => {
-  const refreshToken = req.body.token;
-  // check if the token even exists
-  if (refreshToken == null) return res.sendStatus(401);
+loginRouter.post('/', async (req,res) => {
+    const {email, username} = req.body
+    const user = await loginBLL.checkUserCredentials(username, email)
+    if(!user) return res.json({status: "No Auth"})
+    console.log(`Requesting user ${req.sessionID}`)
+    req.session.user = user
+    req.session.isAuth = true
+    res.json(user)
+})
 
-  // Check if user's refresh token is still valid
-  if (!refreshTokens.includes(refreshToken)) return res.sendStatus(403);
+loginRouter.get('/logout', (req,res)=> {
+    req.session.destroy()
+    res.render('login.html')
+})
 
-  // Verify refresh token
-  jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
-    if (err) return res.sendStatus(403); // Forbidden from access
-    const newAccessToken = generateAccessToken({
-      username: user.username,
-      password: user.password,
-    });
-    res.json({ accessToken: newAccessToken });
-  });
-});
-
-// TODO Logout Handler
-loginRouter.delete("/logout", (req, res) => {
-  // Usually we would delete the refresh token from the database but here we will just remove it from the array
-  refreshTokens = refreshTokens.filter(
-    (token) => token.refreshToken != req.body.token
-  );
-  res.sendStatus(204); // logged out
-});
-
-// Login Handler
-loginRouter.post("/", async (req, res) => {
-  const username = req.body.username;
-  const email = req.body.email;
-
-  // Authenticate the user with web service
-  const userData = await loginBLL.checkUserCredentials(username, email);
-
-  if (!userData) {
-    const errMsg = `Failed login attempt for user:${username} email:${email}, used was not found.`;
-    console.log(errMsg);
-    return res.sendStatus(404);
-  }
-  // Continue here if the user exists on the web service
-  const user = { username: username, email: email };
-
-  // Create public key for certain user with the secret (ACCESS_TOKEN_SECRET)
-  const accessToken = generateAccessToken(
-    user,
-    process.env.ACCESS_TOKEN_SECRET,
-    "15m"
-  );
-  const refreshAccessToken = generateAccessToken(
-    user,
-    process.env.REFRESH_TOKEN_SECRET,
-    "30m"
-  );
-  // TODO Replace this with an actual DB mechanism that saves the refresh tokens
-  refreshTokens.push(refreshAccessToken);
-  // provide the user with the public key for him to use
-  res.json({
-    userData: userData,
-    accessToken: accessToken,
-    refreshToken: refreshAccessToken,
-  });
-});
-
-const generateAccessToken = (user, secretToken, expiresIn) => {
-  return jwt.sign(user, secretToken, { expiresIn: expiresIn });
-};
 
 module.exports = loginRouter;

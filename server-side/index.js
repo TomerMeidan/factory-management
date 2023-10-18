@@ -1,14 +1,15 @@
 // This is the main entry point of the Factory Management backend
 
 // NPM Library Imports
-require('./utils/logger');
+require("./utils/logger");
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
-
-const jwt = require("jsonwebtoken");
 const db = require("./configs/db");
 const app = express();
+const session = require("express-session");
+const MongoDBSession = require("connect-mongodb-session")(session);
+const ejs = require('ejs')
 
 // Routers imports
 const loginRouter = require("./routers/loginRouter");
@@ -16,31 +17,72 @@ const employeesRouter = require("./routers/employeesRouter");
 const shiftsRouter = require("./routers/shiftsRouter");
 const departmentsRouter = require("./routers/departmentsRouter");
 
-// TODO Add authenticateToken later on to all routers
-const authenticateToken = (req, res, next) => {
-  // Middleware to authenticate the token on user actions
-  // Token header ['authorization' Bearer TOKEN]
+// Global server variables
+const PORT = process.env.PORT || 3000;
 
-  const authHeader = req.headers["authorization"];
-  // if user authorized, then authHeader != undefined
-  const token = authHeader && authHeader.split(" ")[1];
-  if (token == null) return res.sendStatus(401);
+// TODO Fix the date object
+const hours = 3600000 * 3
 
-  // Verify the token is still valid or if tampered
-  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
-    if (err) return res.sendStatus(403);
-    req.user = user;
-    next();
-  });
+// Get Current Time
+const midnightTime = () => {
+  const futureTime = new Date()
+  futureTime.setHours(24)
+  futureTime.setMinutes(0)
+  futureTime.setSeconds(0)
+
+  return futureTime.getTime() - new Date().getTime()
+}
+// Configure EJS renderer 
+app.set('view engine', 'ejs')
+app.engine('html', ejs.renderFile);
+
+// Database Connection
+db.connectDB(process.env.MONGO_URI);
+
+// Start of Session Logic --------------------------------------------
+// Session collection storage on mongoDB
+const sessionStorage = new MongoDBSession({
+  uri: process.env.MONGO_URI,
+  collection: "mySessions",
+});
+
+// Middleware for the sessions
+app.use(
+  session({
+    secret: "chocolate rain",
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+      maxAge: midnightTime(), // TODO Set the cookie expiration to midnight (Set for 10 minutes)
+    },
+  })
+);
+
+// Middleware : isAuth middleware is going to verify only logged in users
+const isAuth = (req, res, next) => {
+  if (req.session.isAuth) next();
+  else res.render("login.html");
 };
+
+// End of Session Logic --------------------------------------------
 
 // Middlewares
 app.use(express.json());
 app.use(cors());
 
+app.get("/", (req,res) => {
+  res.render("login.html")
+});
+
 // Routers
 // TODO Login router page related requests
 app.use("/login", loginRouter);
+
+app.use(isAuth)
+
+app.get("/welcome", (req,res) => {
+  res.render("welcome.html");
+})
 
 // Employees router page related requests
 app.use("/employees", employeesRouter);
@@ -54,13 +96,8 @@ app.use("/shifts", shiftsRouter);
 // TODO Users router page related requests
 
 // Server Connection
-app.listen(process.env.PORT, async () => {
-  try {
-    await db.connectDB(process.env.MONGO_URI);
-    console.log(
-      `Factory Management Server is listening on port ${process.env.PORT}...`
-    );
-  } catch (err) {
-    console.log(`Server Connection Error: ${err.message}`);
-  }
+app.listen(PORT, () => {
+  console.log(
+    `Factory Management Server is listening on http://localhost:${PORT}`
+  );
 });

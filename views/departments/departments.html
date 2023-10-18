@@ -15,18 +15,16 @@
   </head>
   <body onload="getAllUsersHandler()">
     <h1 style="text-align: center">Factory Management Site</h1>
-    <button onclick="location.href = '../welcome.html';">Homepage</button>
-    <button onclick="location.href = '../employees/employees.html'">
-      Employees
-    </button>
-    <button onclick="location.href = './departments.html';">Departments</button>
-    <button onclick="location.href = '../shifts/shifts.html'">Shifts</button>
+    <button onclick="location.href = '/welcome';">Homepage</button>
+    <button onclick="location.href = '/employees/getPage/employees'">Employees</button>
+    <button onclick="location.href = 'departments';">Departments</button>
+    <button onclick="location.href = '/shifts/getPage/shifts'">Shifts</button>
     <button>Users</button>
-    <button>Logout</button>
+    <button onclick="location.href = '/login/logout'">Logout</button>
 
     <h3 id="user-name"></h3>
 
-    <button onclick="location.href = './new-department.html'">
+    <button onclick="location.href = './new-department'">
       Add New Department
     </button>
     <br /><br />
@@ -62,7 +60,7 @@
               const departmentRow = cellTarget.closest("tr");
 
               sessionStorage["editDepartmentID"] = departmentRow.id;
-              location.href = "./edit-department.html";
+              location.href = "./edit-department";
             });
 
             departmentCell.innerHTML = `<a href="javascript: void(0)">${department.name}</a>`;
@@ -77,7 +75,7 @@
                 const cellTarget = event.target;
                 const employee = cellTarget.closest("div");
                 sessionStorage["editEmployeeID"] = employee.id;
-                location.href = "../employees/edit-employee.html";
+                location.href = "/employees/getPage/edit-employee";
               });
 
               employeesCell.appendChild(employeeLink);

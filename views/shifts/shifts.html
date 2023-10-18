@@ -15,16 +15,16 @@
   </head>
   <body onload="getAllShiftsHandler()">
     <h1 style="text-align: center">Factory Management Site</h1>
-    <button onclick="location.href = '../welcome.html';">Homepage</button>
-    <button onclick="location.href = '../employees/employees.html'">Employees</button>
-    <button onclick="location.href = '../departments/departments.html';">Departments</button>
-    <button onclick="location.href = './shifts.html'">Shifts</button>
+    <button onclick="location.href = '/welcome';">Homepage</button>
+    <button onclick="location.href = '/employees/getPage/employees'">Employees</button>
+    <button onclick="location.href = '/departments/getPage/departments';">Departments</button>
+    <button onclick="location.href = 'shifts'">Shifts</button>
     <button>Users</button>
-    <button>Logout</button>
+    <button onclick="location.href = '/login/logout'">Logout</button>
 
     <h3 id="user-name"></h3>
 
-    <button onclick="location.href = './new-shift.html'">
+    <button onclick="location.href = './new-shift'">
       Add New Shift
     </button>
     <br /><br />
@@ -59,7 +59,7 @@
           shiftIDCell.innerHTML = `<a href="javascript: void(0)">${shift._id}</a>`;
           shiftIDCell.addEventListener("click", (event) => {
             sessionStorage["editShiftID"] = shiftIDCell.value;
-            location.href = "./edit-shift.html";
+            location.href = "./edit-shift";
           });
           shiftDateCell.innerHTML =`${shift.date}`;
           shiftStartingHourCell.innerHTML = `${shift.date}`;

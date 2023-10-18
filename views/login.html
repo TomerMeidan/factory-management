@@ -3,11 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="../css/style.css" />
     <title>Login Page</title>
   </head>
   <body>
-    <h1 style="text-align: center;">Factory Management Site</h1>
+    <h1 style="text-align: center">Factory Management Site</h1>
 
     <div style="text-align: center">
       <h1>Login</h1>
@@ -16,7 +15,9 @@
       <button onclick="login()">Login</button>
     </div>
 
-    <script>
+    <p id="serverReponse"></p>
+
+    <script>      
       const url = "http://localhost:3000/login";
 
       const login = async () => {
@@ -31,11 +32,14 @@
           body: JSON.stringify(loginData),
         });
 
-        const data = await resp.json();
-
-        sessionStorage["accessToken"] = data.accessToken;
-        sessionStorage["name"] = data.userData.name;
-        location.href = "./welcome.html";
+        const responseData = await resp.json();
+        if (responseData.status === "No Auth")
+          document.getElementById("serverReponse").innerText =
+            "Wrong username or email!";
+        else {
+          sessionStorage["name"] = responseData.name;
+          location.href = "/welcome";
+        }
       };
     </script>
   </body>
