@@ -22,21 +22,37 @@
     <button onclick="location.href = '/users/logout'">Logout</button>
     <h3 id="user-name"></h3>
 
-    Department Name:<input type="text" id="department" value="Marketing" /><br /><br />
-    Department ID:<input type="text" id="departmentID" value="1111" readonly /> (read only)<br /><br />
-    <p>Manager Information:</p>
-    ID: <input type="text" id="employeeID" value="1111" /><br /><br />
-    Name:<input type="text" id="fullName" value="John Doe" readonly /> (read only)<br /><br />
+    <p><strong>Please Note:</strong></p>
+    <ul>
+      <li>
+        Date format: <strong>year-month-day</strong> or
+        <strong>year/month/day</strong>
+      </li>
+      <li>
+        Date format: All single digit months or days
+        <strong>must have a leading 0</strong>
+      </li>
+      <li>Hour format: Only characters between <strong>0 - 23</strong></li>
+      <li>
+        <strong
+          >** Make sure the date and hours values don't exist together in the
+          system already</strong
+        >
+      </li>
+    </ul>
 
-    <button onclick="updateDepartment()">Update Department</button>
+    Shift ID:<input type="text" id="shiftID" value="1111" readonly /> (read only)<br /><br />
+    Date:<input type="text" id="date" value="2022-02-22"  /> <br /><br />
+    Starting Hour:<input type="text" id="startingHour" value="0"  /> <br /><br />
+    Ending Hour:<input type="text" id="endingHour" value="23"  /> <br /><br />
 
-    <button onclick="deleteDepartment()">Delete Department</button>
+    <button onclick="updateShift()">Update Shift</button>
 
-    <p>Employees that are not part of the department</p>
-    <select name="employees-not-in-department" id="employees-not-in-department">
+    <p>Employees that are not part of the shift</p>
+    <select name="employees-not-in-shift" id="employees-not-in-shift">
       <option></option>
     </select>
-    <button id="add-employee-to-department">Add employee</button>
+    <button id="add-employee-to-shift">Add employee</button>
     <p id="responseFromServer"></p>
 
     <script>
@@ -44,10 +60,10 @@
         shifts: [],
       };
 
-      async function updateDepartment() {
+      async function updateShift() {
         const id = sessionStorage["editDepartmentID"];
         const data = {
-          name: document.getElementById("department").value,
+          name: document.getElementById("shiftName").value,
           manager: document.getElementById("employeeID").value,
         };
         const response = await fetch(
@@ -64,68 +80,38 @@
         document.getElementById("responseFromServer").innerText = user;
       }
 
-      async function deleteDepartment() {
-        const id = sessionStorage["editDepartmentID"];
-        
-        // Delete the department from the system
-
-        const response = await fetch(
-          `http://localhost:3000/departments/edit/${id}`,
-          {
-            method: "DELETE",
-          }
-        );
-        const responseFromServer = await response.json();
-        document.getElementById("responseFromServer").innerText = responseFromServer;
-
-        // TODO Delete the department in all the employees documents in employees collection
-
-        response = await fetch(
-          `http://localhost:3000/employees/remove/department/${id}`,
-          {
-            method: "PUT",
-          }
-        );
-
-        responseFromServer = await response.json();
-        document.getElementById("responseFromServer").innerText += `\n${responseFromServer}`;
-
-      }
-
       async function init() {
-        const id = sessionStorage["editDepartmentID"];
-        buildSelectedDepartmentInformation(id);
-        buildNoneDepartmentEmployeesList(id);
+        const id = sessionStorage["editShiftID"];
+        loadSelectedShift(id);
+        buildNoneShiftEmployeesList(id);
 
-        initAddEmployeeToDepartmentListener();
+        initAddEmployeeToShiftListener();
 
-        // TODO Use session to store the incoming user data
         const name = sessionStorage["name"];
         const welcome = (document.getElementById(
           "user-name"
         ).innerText = `Welcome, ${name || ""}`);
       }
 
-      async function buildSelectedDepartmentInformation(id) {
+      async function loadSelectedShift(id) {
         const response = await fetch(
-          `http://localhost:3000/departments/edit/${id}`,
+          `http://localhost:3000/shifts/${id}`,
           {
             method: "GET",
           }
         );
-        const department = await response.json();
+        const shift = await response.json();
 
-        document.getElementById("department").value = department.name;
-        document.getElementById("departmentID").value = department._id;
-        document.getElementById("employeeID").value = department.manager._id;
-        document.getElementById(
-          "fullName"
-        ).value = `${department.manager.firstName} ${department.manager.lastName}`;
+        document.getElementById("shiftID").value = shift._id;
+        document.getElementById("date").value = shift.date;
+        document.getElementById("startingHour").value = shift.startingHour;
+        document.getElementById("endingHour").value = shift.endingHour;
+
       }
 
-      async function buildNoneDepartmentEmployeesList(id) {
+      async function buildNoneShiftEmployeesList(id) {
         const response = await fetch(
-          `http://localhost:3000/employees/not_in/department/${id}`,
+          `http://localhost:3000/employees/not_in/shift/${id}`,
           {
             method: "GET",
           }
@@ -133,7 +119,7 @@
         const employees = await response.json();
 
         const employeesSelect = document.getElementById(
-          "employees-not-in-department"
+          "employees-not-in-shift"
         );
         employees.forEach((employee) => {
           const employeeID = employee._id;
@@ -145,21 +131,21 @@
         });
       }
 
-      async function initAddEmployeeToDepartmentListener() {
+      async function initAddEmployeeToShiftListener() {
         const addEmployeeButton = document.getElementById(
-          "add-employee-to-department"
+          "add-employee-to-shift"
         );
 
         addEmployeeButton.addEventListener("click", async (event) => {
           const employeesSelectDropDown = document.getElementById(
-            "employees-not-in-department"
+            "employees-not-in-shift"
           );
           const selectedEmployee = employeesSelectDropDown.value;
           const data = {
-            departmentID: document.getElementById("departmentID").value,
+            shiftID: document.getElementById("shiftID").value,
           };
             const response = await fetch(
-              `http://localhost:3000/employees/${selectedEmployee}/switch/department/`,
+              `http://localhost:3000/employees/${selectedEmployee}/switch/shift/`,
               {
                 method: "PUT",
                 headers: {

@@ -58,11 +58,12 @@
           
           shiftIDCell.innerHTML = `<a href="javascript: void(0)">${shift._id}</a>`;
           shiftIDCell.addEventListener("click", (event) => {
-            sessionStorage["editShiftID"] = shiftIDCell.value;
+            const cellTarget = event.target;
+            const shiftRow = cellTarget.closest("tr");
+            sessionStorage["editShiftID"] = shiftRow.id;
             location.href = "./edit-shift";
           });
           shiftDateCell.innerHTML =`${shift.date}`;
-          shiftStartingHourCell.innerHTML = `${shift.date}`;
           shiftStartingHourCell.innerHTML = `${shift.startingHour}`
           shiftEndingHourCell.innerHTML = `${shift.endingHour}`
         });
