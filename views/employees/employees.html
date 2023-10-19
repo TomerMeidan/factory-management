@@ -19,7 +19,7 @@
     <button onclick="location.href = 'employees'">Employees</button>
     <button onclick="location.href = '/departments/getPage/departments';">Departments</button>
     <button onclick="location.href = '/shifts/getPage/shifts'">Shifts</button>
-    <button>Users</button>
+    <button onclick="location.href = '/users/getPage/users';">Users</button>
     <button onclick="location.href = '/users/logout'">Logout</button>
     <h3 id="user-name"></h3>
 
@@ -131,7 +131,6 @@
         users = await response.json();
         buildDepartmentsList(buildUsersTable());
 
-        // TODO Use session to store the incoming user data
         const name = sessionStorage["name"];
         const welcome = (document.getElementById(
           "user-name"
