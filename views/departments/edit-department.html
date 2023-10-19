@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Departments - Edit</title>
+    <style>
+      table,
+      th,
+      td {
+        border: 1px solid black;
+      }
+    </style>
+  </head>
+  <body onload="init()">
+    <h1 style="text-align: center">Factory Management Site</h1>
+    <button onclick="location.href = '/welcome';">Homepage</button>
+    <button onclick="location.href = '/employees/getPage/employees'">Employees</button>
+    <button onclick="location.href = './departments';">Departments</button>
+    <button onclick="location.href = '/shifts/getPage/shifts'">Shifts</button>
+    <button onclick="location.href = '/users/getPage/users';">Users</button>
+    <button onclick="location.href = '/users/logout'">Logout</button>
+    <h3 id="user-name"></h3>
+
+    Department Name:<input type="text" id="department" value="Marketing" /><br /><br />
+    Department ID:<input type="text" id="departmentID" value="1111" readonly /> (read only)<br /><br />
+    <p>Manager Information:</p>
+    ID: <input type="text" id="employeeID" value="1111" /><br /><br />
+    Name:<input type="text" id="fullName" value="John Doe" readonly /> (read only)<br /><br />
+
+    <button onclick="updateDepartment()">Update Department</button>
+
+    <button onclick="deleteDepartment()">Delete Department</button>
+
+    <p>Employees that are not part of the department</p>
+    <select name="employees-not-in-department" id="employees-not-in-department">
+      <option></option>
+    </select>
+    <button id="add-employee-to-department">Add employee</button>
+    <p id="responseFromServer"></p>
+
+    <script>
+      let newShiftsForEmployee = {
+        shifts: [],
+      };
+
+      async function updateDepartment() {
+        const id = sessionStorage["editDepartmentID"];
+        const data = {
+          name: document.getElementById("department").value,
+          manager: document.getElementById("employeeID").value,
+        };
+        const response = await fetch(
+          `http://localhost:3000/departments/edit/${id}`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+          }
+        );
+        const user = await response.json();
+        document.getElementById("responseFromServer").innerText = user;
+      }
+
+      async function deleteDepartment() {
+        const id = sessionStorage["editDepartmentID"];
+        
+        // Delete the department from the system
+
+        const response = await fetch(
+          `http://localhost:3000/departments/edit/${id}`,
+          {
+            method: "DELETE",
+          }
+        );
+        const responseFromServer = await response.json();
+        document.getElementById("responseFromServer").innerText = responseFromServer;
+
+
+        response = await fetch(
+          `http://localhost:3000/employees/remove/department/${id}`,
+          {
+            method: "PUT",
+          }
+        );
+
+        responseFromServer = await response.json();
+        document.getElementById("responseFromServer").innerText += `\n${responseFromServer}`;
+
+      }
+
+      async function init() {
+        const id = sessionStorage["editDepartmentID"];
+        buildSelectedDepartmentInformation(id);
+        buildNoneDepartmentEmployeesList(id);
+
+        initAddEmployeeToDepartmentListener();
+
+        const name = sessionStorage["name"];
+        const welcome = (document.getElementById(
+          "user-name"
+        ).innerText = `Welcome, ${name || ""}`);
+      }
+
+      async function buildSelectedDepartmentInformation(id) {
+        const response = await fetch(
+          `http://localhost:3000/departments/edit/${id}`,
+          {
+            method: "GET",
+          }
+        );
+        const department = await response.json();
+
+        document.getElementById("department").value = department.name;
+        document.getElementById("departmentID").value = department._id;
+        document.getElementById("employeeID").value = department.manager._id;
+        document.getElementById(
+          "fullName"
+        ).value = `${department.manager.firstName} ${department.manager.lastName}`;
+      }
+
+      async function buildNoneDepartmentEmployeesList(id) {
+        const response = await fetch(
+          `http://localhost:3000/employees/not_in/department/${id}`,
+          {
+            method: "GET",
+          }
+        );
+        const employees = await response.json();
+
+        const employeesSelect = document.getElementById(
+          "employees-not-in-department"
+        );
+        employees.forEach((employee) => {
+          const employeeID = employee._id;
+          const employeeName = `${employee.firstName} ${employee.lastName} (id: ${employeeID})`;
+          employeesSelect.options[employeesSelect.options.length] = new Option(
+            employeeName,
+            employeeID
+          );
+        });
+      }
+
+      async function initAddEmployeeToDepartmentListener() {
+        const addEmployeeButton = document.getElementById(
+          "add-employee-to-department"
+        );
+
+        addEmployeeButton.addEventListener("click", async (event) => {
+          const employeesSelectDropDown = document.getElementById(
+            "employees-not-in-department"
+          );
+          const selectedEmployee = employeesSelectDropDown.value;
+          const data = {
+            departmentID: document.getElementById("departmentID").value,
+          };
+            const response = await fetch(
+              `http://localhost:3000/employees/${selectedEmployee}/switch/department/`,
+              {
+                method: "PUT",
+                headers: {
+                  "content-type": "application/json",
+                },
+                body: JSON.stringify(data),
+              }
+            );
+          const responseMessage = await response.json();
+          document.getElementById("responseFromServer").innerText =
+            responseMessage;
+        });
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Departments - Main</title>
+    <style>
+      table,
+      th,
+      td {
+        border: 1px solid black;
+        padding: 10px;
+      }
+    </style>
+  </head>
+  <body onload="getAllUsersHandler()">
+    <h1 style="text-align: center">Factory Management Site</h1>
+    <button onclick="location.href = '/welcome';">Homepage</button>
+    <button onclick="location.href = '/employees/getPage/employees'">Employees</button>
+    <button onclick="location.href = 'departments';">Departments</button>
+    <button onclick="location.href = '/shifts/getPage/shifts'">Shifts</button>
+    <button onclick="location.href = '/users/getPage/users';">Users</button>
+    <button onclick="location.href = '/users/logout'">Logout</button>
+
+    <h3 id="user-name"></h3>
+
+    <button onclick="location.href = './new-department'">
+      Add New Department
+    </button>
+    <br /><br />
+    <table id="users-table"></table>
+
+    <script>
+      let departmentsData = null;
+      let clickCount = 0;
+
+      function buildUsersTable() {
+        let usersTable = document.getElementById("users-table");
+        usersTable.innerHTML = `    <table id="users-table">
+      <tr>
+        <th id="department">Department</th>
+        <th id="manager">Manager</th>
+        <th id="employees">Employees</th>
+      </tr>
+    </table>`;
+
+        departmentsData.forEach((department) => {
+          if (department.name != "NONE") {
+            // We are adding at the end
+            let row = usersTable.insertRow(-1);
+            row.setAttribute("id", `${department._id}`);
+
+            // Create table cells
+            let departmentCell = row.insertCell(0);
+            let managerCell = row.insertCell(1);
+            let employeesCell = row.insertCell(2);
+
+            departmentCell.addEventListener("click", (event) => {
+              const cellTarget = event.target;
+              const departmentRow = cellTarget.closest("tr");
+
+              sessionStorage["editDepartmentID"] = departmentRow.id;
+              location.href = "./edit-department";
+            });
+
+            departmentCell.innerHTML = `<a href="javascript: void(0)">${department.name}</a>`;
+            managerCell.innerHTML = `${department.manager[0].firstName} ${department.manager[0].lastName}`;
+
+            department.employees.forEach((employee) => {
+              const employeeLink = document.createElement("div");
+              employeeLink.innerHTML = `<a href="javascript: void(0)">${employee.firstName} ${employee.lastName}</a>`;
+              employeeLink.setAttribute("id", `${employee._id}`);
+
+              employeeLink.addEventListener("click", (event) => {
+                const cellTarget = event.target;
+                const employee = cellTarget.closest("div");
+                sessionStorage["editEmployeeID"] = employee.id;
+                location.href = "/employees/getPage/edit-employee";
+              });
+
+              employeesCell.appendChild(employeeLink);
+            });
+          }
+        });
+      }
+
+      async function getAllUsersHandler() {
+        const response = await fetch("http://localhost:3000/departments", {
+          method: "GET",
+        });
+        departmentsData = await response.json();
+        buildUsersTable();
+
+        const name = sessionStorage["name"];
+        const welcome = (document.getElementById(
+          "user-name"
+        ).innerText = `Welcome, ${name || ""}`);
+      }
+    </script>
+  </body>
+</html>

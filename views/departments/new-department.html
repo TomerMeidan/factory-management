@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Departments - New</title>
+    <style>
+      table,
+      th,
+      td {
+        border: 1px solid black;
+      }
+    </style>
+  </head>
+  <body onload="addNewDepartmentOnLoadHandler()">
+    <h1 style="text-align: center">Factory Management Site</h1>
+    <button onclick="location.href = '/welcome';">Homepage</button>
+    <button onclick="location.href = '/employees/getPage/employees'">Employees</button>
+    <button onclick="location.href = './departments';">Departments</button>
+    <button onclick="location.href = '/shifts/getPage/shifts'">Shifts</button>
+    <button onclick="location.href = '/users/getPage/users';">Users</button>
+    <button onclick="location.href = '/users/logout'">Logout</button>
+    <h3 id="user-name"></h3>
+
+    Department Name: <input type="text" id="departmentName" value="Blank" /> <br /><br />
+
+    <button onclick="saveDepartment()">Save</button>
+
+    <button onclick="location.href = './departments';">Cancel</button>
+
+    <p id="responseFromServer"></p>
+    
+    <script>
+      async function saveDepartment() {
+        const data = {
+          name: document.getElementById("departmentName").value,
+        };
+        const response = await fetch(`http://localhost:3000/departments/new`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        });
+        const responseMessage = await response.json();
+        document.getElementById("responseFromServer").innerText = responseMessage
+         
+      }
+
+      async function addNewDepartmentOnLoadHandler() {
+        const name = sessionStorage["name"];
+        const welcome = (document.getElementById(
+          "user-name"
+        ).innerText = `Welcome, ${name || ""}`);
+      }
+
+    </script>
+  </body>
+</html>

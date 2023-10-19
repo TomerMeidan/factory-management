@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Shifts - Edit</title>
+    <style>
+      table,
+      th,
+      td {
+        border: 1px solid black;
+      }
+    </style>
+  </head>
+  <body onload="init()">
+    <h1 style="text-align: center">Factory Management Site</h1>
+    <button onclick="location.href = '/welcome';">Homepage</button>
+    <button onclick="location.href = '/employees/getPage/employees'">Employees</button>
+    <button onclick="location.href = '/departments/getPage/departments';">Departments</button>
+    <button onclick="location.href = './shifts'">Shifts</button>
+    <button onclick="location.href = '/users/getPage/users';">Users</button>
+    <button onclick="location.href = '/users/logout'">Logout</button>
+    <h3 id="user-name"></h3>
+
+    <p><strong>Please Note:</strong></p>
+    <ul>
+      <li>
+        Date format: <strong>year-month-day</strong> or
+        <strong>year/month/day</strong>
+      </li>
+      <li>
+        Date format: All single digit months or days
+        <strong>must have a leading 0</strong>
+      </li>
+      <li>Hour format: Only characters between <strong>0 - 23</strong></li>
+      <li>
+        <strong
+          >** Make sure the date and hours values don't exist together in the
+          system already</strong
+        >
+      </li>
+    </ul>
+
+    Shift ID:<input type="text" id="shiftID" value="1111" readonly /> (read only)<br /><br />
+    Date:<input type="text" id="date" value="2022-02-22"  /> <br /><br />
+    Starting Hour:<input type="text" id="startingHour" value="0"  /> <br /><br />
+    Ending Hour:<input type="text" id="endingHour" value="23"  /> <br /><br />
+
+    <button onclick="updateShift()">Update Shift</button>
+
+    <p>Employees that are not part of the shift</p>
+    <select name="employees-not-in-shift" id="employees-not-in-shift">
+      <option></option>
+    </select>
+    <button id="add-employee-to-shift">Add employee</button>
+    <p id="responseFromServer"></p>
+
+    <script>
+      let newShiftsForEmployee = {
+        shifts: [],
+      };
+
+      async function updateShift() {
+        const id = sessionStorage["editDepartmentID"];
+        const data = {
+          name: document.getElementById("shiftName").value,
+          manager: document.getElementById("employeeID").value,
+        };
+        const response = await fetch(
+          `http://localhost:3000/departments/edit/${id}`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+          }
+        );
+        const user = await response.json();
+        document.getElementById("responseFromServer").innerText = user;
+      }
+
+      async function init() {
+        const id = sessionStorage["editShiftID"];
+        loadSelectedShift(id);
+        buildNoneShiftEmployeesList(id);
+
+        initAddEmployeeToShiftListener();
+
+        const name = sessionStorage["name"];
+        const welcome = (document.getElementById(
+          "user-name"
+        ).innerText = `Welcome, ${name || ""}`);
+      }
+
+      async function loadSelectedShift(id) {
+        const response = await fetch(
+          `http://localhost:3000/shifts/${id}`,
+          {
+            method: "GET",
+          }
+        );
+        const shift = await response.json();
+
+        document.getElementById("shiftID").value = shift._id;
+        document.getElementById("date").value = shift.date;
+        document.getElementById("startingHour").value = shift.startingHour;
+        document.getElementById("endingHour").value = shift.endingHour;
+
+      }
+
+      async function buildNoneShiftEmployeesList(id) {
+        const response = await fetch(
+          `http://localhost:3000/employees/not_in/shift/${id}`,
+          {
+            method: "GET",
+          }
+        );
+        const employees = await response.json();
+
+        const employeesSelect = document.getElementById(
+          "employees-not-in-shift"
+        );
+        employees.forEach((employee) => {
+          const employeeID = employee._id;
+          const employeeName = `${employee.firstName} ${employee.lastName} (id: ${employeeID})`;
+          employeesSelect.options[employeesSelect.options.length] = new Option(
+            employeeName,
+            employeeID
+          );
+        });
+      }
+
+      async function initAddEmployeeToShiftListener() {
+        const addEmployeeButton = document.getElementById(
+          "add-employee-to-shift"
+        );
+
+        addEmployeeButton.addEventListener("click", async (event) => {
+          const employeesSelectDropDown = document.getElementById(
+            "employees-not-in-shift"
+          );
+          const selectedEmployee = employeesSelectDropDown.value;
+          const data = {
+            shiftID: document.getElementById("shiftID").value,
+          };
+            const response = await fetch(
+              `http://localhost:3000/employees/${selectedEmployee}/switch/shift/`,
+              {
+                method: "PUT",
+                headers: {
+                  "content-type": "application/json",
+                },
+                body: JSON.stringify(data),
+              }
+            );
+          const responseMessage = await response.json();
+          document.getElementById("responseFromServer").innerText =
+            responseMessage;
+        });
+      }
+    </script>
+  </body>
+</html>
