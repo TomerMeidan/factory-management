@@ -1,5 +1,9 @@
 const userModel = require('../model/userModel')
 
+const getAllUsers = async () => {
+    return await userModel.find();
+}
+
 const updateUserActions = async (userID, numOfActions) => {
     await userModel.findOneAndUpdate({id: userID}, {currentActions: numOfActions})
     .then(() => console.log(`UsersRouter: updateUserActions: User id ${userID} current actions was updated`))
@@ -10,4 +14,4 @@ const updateAllUsersActions = () => {
     
 }
 
-module.exports = {updateUserActions, updateAllUsersActions}
+module.exports = {updateUserActions, updateAllUsersActions, getAllUsers}

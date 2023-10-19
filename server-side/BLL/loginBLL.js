@@ -10,7 +10,7 @@ const checkUserCredentials = async (username, email) => {
   const userActions = await userModel.findOne({ id: user.id });
   if (userActions === undefined) return false;
   user["numOfActions"] = userActions.numOfActions;
-  user["currentActions"] = userActions.currentActions; // TODO Change this field or add another document field
+  user["currentActions"] = userActions.currentActions;
   return user;
 };
 

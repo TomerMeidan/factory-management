@@ -1,4 +1,8 @@
 // This is the main entry point of the Factory Management backend
+// Author: Tomer Meidan
+// 1st version date: 19.10.2023 13:39
+
+// TODO Improve the actions to database logic (right now it updates when user logs out)
 
 // NPM Library Imports
 require("./utils/logger");
@@ -83,10 +87,10 @@ app.use("/employees", employeesRouter);
 // Departments router page related requests
 app.use("/departments", departmentsRouter);
 
-// TODO Shifts router page related requests
+// Shifts router page related requests
 app.use("/shifts", shiftsRouter);
 
-// TODO Users router page related requests
+// Users router page related requests
 app.use("/users", usersRouter);
 
 

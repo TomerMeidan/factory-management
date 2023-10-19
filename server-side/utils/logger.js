@@ -28,9 +28,6 @@ console.log = (args) => {
 // The console.update will timestamp any actions by the users and store in a local file
 console.update = (user) => {
   const time = new Date();
-  const userActionRow = `id:${user.id}, maxActions:${
-    user.maxActions
-  }, date:${time.toLocaleDateString()}, actionsAllowed:${user.actionsAllowed}`;
   user["date"] = time.toLocaleDateString();
 
   // open file and get data

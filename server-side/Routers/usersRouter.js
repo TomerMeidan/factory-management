@@ -1,6 +1,25 @@
 const express = require("express");
 const userRouter = express.Router();
 const usersBLL = require("../BLL/usersBLL");
+const checkAndUpdateActions = require("../utils/updateActions")
+
+// Main Entry Point: localhost:port/users
+
+// Action: GET
+// Entry Point: localhost:port/users/getPage/users
+userRouter.get('/getPage/users', checkAndUpdateActions ,(req,res) => {
+  res.render("users/users.html")
+})
+
+
+// Action: GET
+// Entry Point: localhost:port/users
+// Info: Get all users data from users collection
+userRouter.get("/", async (req, res) => {
+  const users = await usersBLL.getAllUsers();
+  res.status(201).send(users);
+});
+
 
 // Action: GET
 // Entry Point: localhost:port/users/updateActions
@@ -14,12 +33,12 @@ userRouter.get('/updateActions/:id/:actionNumber', async (req,res) => {
 
   })
   
-  // Action: TODO GET
+  // Action: GET
   // Entry Point: localhost:port/users/updateAllUsers
   // Info: Update all users actions to their max actions allowed
   userRouter.get('/updateAllActions/', async (req,res) => {
     try{
-    await usersBLL.updateAllUsersActions()
+    await usersBLL.updateAllUsersActions() // TODO update all users actions at midnight
     }catch(err){
       
     }
