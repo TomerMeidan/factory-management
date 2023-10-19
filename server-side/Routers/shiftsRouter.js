@@ -24,6 +24,14 @@ shiftsRouter.get('/getPage/new-shift', (req,res) => {
 })
 
 // Action: GET
+// Entry Point: localhost:port/shifts/:id
+// Info: Get a shift from mongodb shifts collection by id
+shiftsRouter.get("/:id", async (req, res) => {
+  const response = await shiftsBLL.getShiftByID(req.params.id);
+  res.status(201).json(response);
+});
+
+// Action: GET
 // Entry Point: localhost:port/shifts
 // Info: Get all shifts from mongodb shifts collection
 shiftsRouter.get("/", async (req, res) => {
@@ -47,5 +55,7 @@ shiftsRouter.put('/edit/:id',checkAndUpdateActions ,async (req,res) => {
   const responseMessage = await shiftsBLL.editShift(req.params.id, req.body);
   res.status(201).json(responseMessage);
 })
+
+
 
 module.exports = shiftsRouter;

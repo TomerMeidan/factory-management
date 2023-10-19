@@ -36,6 +36,21 @@ employeesRouter.get("/edit/:id", async (req, res) => {
   }
 });
 
+// Action: GET
+// Entry Point: localhost:3000/employees/not_in/shift/:id
+// Info: Get all employees data that are not in a specific shift
+employeesRouter.get("/not_in/shift/:id", async (req, res) => {
+  try {
+    const employees = await employeesBLL.getAllEmployeesNotInShift(
+      req.params.id
+    );
+    res.status(201).send(employees);
+  } catch (err) {
+    console.log(`EmployeesRouter : ${err.message}`);
+    res.status(501).send(`${err.message}`);
+  }
+});
+
 // Action: PUT
 // Entry Point: localhost:port/employees/edit/:id
 // Info: Update an employee with new information
@@ -137,6 +152,32 @@ employeesRouter.put("/:id/switch/department/",checkAndUpdateActions ,async (req,
         `Switching departments for employee ${req.params.id} failed! message:${err.name}`
       );
   }
+});
+
+// Action: GET
+// Entry Point: localhost:port/employees/:id/switch/shift/
+// Info: Get all employees data that are not in a specific department
+employeesRouter.put("/:id/switch/shift/",checkAndUpdateActions ,async (req, res) => {
+  try {
+    const response = await employeesBLL.updateEmployeeShift(
+      req.params.id,
+      req.body
+    );
+    console.log(
+      `EmployeesRouter : Employee ${req.params.id} was add to the shift`
+    );
+    res.json(`EmployeesRouter : Employee ${req.params.id} was add to the shift`);
+  } catch (err) {
+    console.log(
+      `EmployeesRouter : Adding employee to shift ${req.params.id} failed! message:${err.message}`
+    );
+    res
+      .status(501)
+      .send(
+        `Adding employee to shift ${req.params.id} failed! message:${err.name}`
+      );
+  }
+
 });
 
 module.exports = employeesRouter;

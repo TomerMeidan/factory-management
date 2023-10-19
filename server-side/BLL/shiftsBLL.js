@@ -16,9 +16,9 @@ const getAllShifts = async () => {
 // Add new shift to the system collection
 const addShift = async (shiftData) => {
   // Parse string to Date
-  const regex = /[-/]/; 
+  const regex = /[-/]/;
   const dateParts = shiftData.date.split(regex);
-  const jsDate = `${dateParts[0]}-${dateParts[1]}-${dateParts[2]}`
+  const jsDate = `${dateParts[0]}-${dateParts[1]}-${dateParts[2]}`;
 
   shiftData.date = jsDate;
   const result = await shiftModel.find(shiftData);
@@ -55,4 +55,12 @@ const editShift = async (shiftID, shiftData) => {
     });
 };
 
-module.exports = { getAllShifts, addShift, editShift };
+const getShiftByID = async (shiftID) => {
+  try {
+    return await shiftModel.findOne({ _id: shiftID });
+  } catch (err) {
+    return err.message;
+  }
+};
+
+module.exports = { getAllShifts, addShift, editShift, getShiftByID };

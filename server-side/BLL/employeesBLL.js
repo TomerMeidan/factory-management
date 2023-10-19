@@ -104,11 +104,27 @@ const addEmployee = async (employeeData) => {
   return "New employee inserted!";
 };
 
+// Filter employees not in a certain department
 const getAllEmployeesNotInDepartment = async (departmentID) => {
   const notInDepartment = { departmentID: { $ne: departmentID } };
   // Filter employees not in the Sales department
   const employees = await employeeModel.find({
     departmentID: notInDepartment.departmentID,
+  });
+
+  return employees;
+};
+
+// Filter employees not in a certain shift
+const getAllEmployeesNotInShift = async (shiftID) => {
+  const employees = await employeeModel.find({
+    shifts: {
+      $not: {
+        $elemMatch: {
+          $eq: new mongoose.Types.ObjectId(shiftID),
+        },
+      },
+    },
   });
 
   return employees;
@@ -146,6 +162,20 @@ const updateEmployeeDepartment = async (employeeID, data) => {
     });
 };
 
+const updateEmployeeShift = async (employeeID, data) => {
+
+const newShiftId = data.shiftID; 
+
+await employeeModel.updateOne(
+    { _id: employeeID },
+    {
+      $push: {
+        shifts: new mongoose.Types.ObjectId(newShiftId),
+      },
+    }
+  )
+};
+
 module.exports = {
   getAllEmployees,
   getEmployeeByID,
@@ -155,4 +185,6 @@ module.exports = {
   getAllEmployeesNotInDepartment,
   updateEmployeeDepartment,
   removeDepartment,
+  getAllEmployeesNotInShift,
+  updateEmployeeShift,
 };
