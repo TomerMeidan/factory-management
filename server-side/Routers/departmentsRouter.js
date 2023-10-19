@@ -1,12 +1,13 @@
 const express = require("express");
 const departmentsRouter = express.Router();
 const departmentsBLL = require("../BLL/departmentsBLL");
+const checkAndUpdateActions = require("../utils/updateActions")
 
 // Main Entry Point: localhost:port/departments
 
 // Action: GET
 // Entry Point: localhost:port/departments/getPage/departments
-departmentsRouter.get('/getPage/departments', (req,res) => {
+departmentsRouter.get('/getPage/departments',checkAndUpdateActions ,(req,res) => {
   res.render("departments/departments.html")
 })
 
@@ -38,7 +39,7 @@ departmentsRouter.get("/edit/:id", async (req, res) => {
 // Action: PUT
 // Entry Point: localhost:port/departments/edit/:id
 // Info: Update a department with new information
-departmentsRouter.put("/edit/:id", async (req, res) => {
+departmentsRouter.put("/edit/:id",checkAndUpdateActions ,async (req, res) => {
   let responseMessage = null;
   try {
     responseMessage = await departmentsBLL.updateDepartmentByID(req.params.id, req.body);
@@ -51,7 +52,7 @@ departmentsRouter.put("/edit/:id", async (req, res) => {
 // Action: DELETE
 // Entry Point: localhost:port/departments/edit/:id
 // Info: Delete requested department from collection by id field
-departmentsRouter.delete("/edit/:id", async (req, res) => {
+departmentsRouter.delete("/edit/:id",checkAndUpdateActions ,async (req, res) => {
   let responseMessage = null;
   try {
     responseMessage = await departmentsBLL.deleteDepartmentByID(req.params.id);
@@ -64,7 +65,7 @@ departmentsRouter.delete("/edit/:id", async (req, res) => {
 // Action: POST
 // Entry Point: localhost:port/departments/new
 // Info: Create new department and send it to the mongo db
-departmentsRouter.post("/new", async (req,res) => {
+departmentsRouter.post("/new",checkAndUpdateActions ,async (req,res) => {
   let responseMessage = null;
   try {
     responseMessage = await departmentsBLL.addDepartment(req.body);

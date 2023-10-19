@@ -8,7 +8,8 @@ const userSchema = new schema(
   {
     id: { type: Number, unique: true },
     name: { type: String },
-    numOfActions: {type: Number}
+    numOfActions: {type: Number},
+    currentActions: {type: Number},
   },
   { versionKey: false }
 );

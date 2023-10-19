@@ -1,12 +1,13 @@
 const express = require("express");
 const employeesRouter = express.Router();
 const employeesBLL = require("../BLL/employeesBLL");
+const checkAndUpdateActions = require("../utils/updateActions")
 
 // Main Entry Point: localhost:port/employees
 
 // Action: GET
 // Entry Point: localhost:port/employees/getPage/employees
-employeesRouter.get('/getPage/employees', (req,res) => {
+employeesRouter.get('/getPage/employees', checkAndUpdateActions ,(req,res) => {
   res.render("employees/employees.html")
 })
 
@@ -38,7 +39,7 @@ employeesRouter.get("/edit/:id", async (req, res) => {
 // Action: PUT
 // Entry Point: localhost:port/employees/edit/:id
 // Info: Update an employee with new information
-employeesRouter.put("/edit/:id", async (req, res) => {
+employeesRouter.put("/edit/:id", checkAndUpdateActions ,async (req, res) => {
   let responseMessage = null;
   try {
     responseMessage = await employeesBLL.updateEmployeeByID(
@@ -54,7 +55,7 @@ employeesRouter.put("/edit/:id", async (req, res) => {
 // Action: DELETE
 // Entry Point: localhost:port/employees/edit/:id
 // Info: Delete requested employee from collection by _id field
-employeesRouter.delete("/edit/:id", async (req, res) => {
+employeesRouter.delete("/edit/:id",checkAndUpdateActions ,async (req, res) => {
   let responseMessage = null;
   try {
     responseMessage = await employeesBLL.deleteEmployeeByID(req.params.id);
@@ -67,7 +68,7 @@ employeesRouter.delete("/edit/:id", async (req, res) => {
 // Action: POST
 // Entry Point: localhost:port/employees/new
 // Info: Create new employee and send it to the collection
-employeesRouter.post("/new", async (req, res) => {
+employeesRouter.post("/new",checkAndUpdateActions ,async (req, res) => {
   let responseMessage = null;
   try {
     responseMessage = await employeesBLL.addEmployee(req.body);
@@ -116,7 +117,7 @@ employeesRouter.get("/not_in/department/:id", async (req, res) => {
 // Action: GET
 // Entry Point: localhost:port/employees/:id/switch/department/
 // Info: Get all employees data that are not in a specific department
-employeesRouter.put("/:id/switch/department/", async (req, res) => {
+employeesRouter.put("/:id/switch/department/",checkAndUpdateActions ,async (req, res) => {
   try {
     const response = await employeesBLL.updateEmployeeDepartment(
       req.params.id,
